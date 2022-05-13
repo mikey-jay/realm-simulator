@@ -19,12 +19,13 @@ function create (size) {
 }
 
 function addInstallation (parcelIn, installation) {
-    if (installation.width > parcelIn.width || installation.height > parcelIn.height) throw new Error('installation is too large to fit on parcel')
+    let parcelOut = structuredClone(parcelIn)
+    if (installation.width > parcelOut.width || installation.height > parcelOut.height) throw new Error('installation is too large to fit on parcel')
     const getInstallationArea = (i) => i.width * i.height
-    const usedSpace = parcelIn.installations.reduce((total, i) => total + getInstallationArea(i), 0)
-    const freeSpace = parcelIn.width * parcelIn.height - usedSpace
+    const usedSpace = parcelOut.installations.reduce((total, i) => total + getInstallationArea(i), 0)
+    const freeSpace = parcelOut.width * parcelOut.height - usedSpace
     if (freeSpace < getInstallationArea(installation)) throw new Error('not enough space on parcel')
-    return Wallet.addInstallation(parcelIn, installation)
+    return Wallet.addInstallation(parcelOut, installation)
 }
 
 module.exports = {
