@@ -1,7 +1,7 @@
 const test = require('tape');
 const Wallet = require('../entities/wallet.js')
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Wallet.addTokens, Wallet.removeTokens', (t) => {
     const w = Wallet.create()

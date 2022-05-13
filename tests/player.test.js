@@ -2,7 +2,7 @@ const test = require('tape');
 const Player = require('../entities/player.js')
 const tokens = ['BTC', 'ETH']
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Player.addTokens', (t) => {
     const g = Player.create()

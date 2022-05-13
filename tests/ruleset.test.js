@@ -1,7 +1,7 @@
 const test = require('tape');
 const Ruleset = require('../entities/ruleset.js')
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Ruleset.create', (t) => {
     rules = Ruleset.create('testRules')

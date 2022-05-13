@@ -2,7 +2,7 @@ const test = require('tape');
 const Reservoir = require('../entities/reservoir.js')
 const tokens = ['taco', 'bell']
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Reservoir.create', (t) => {
 

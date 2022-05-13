@@ -9,7 +9,7 @@ const parcelTypes = [
     { size: 'paartner', width: 64, height: 64 }
 ]
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 test('Parcel.create', (t) => {
     let p = Parcel.create(parcelTypes[0].size)
     t.equal(p.installations.length, 0, 'New parcel should not have any installations')
@@ -52,8 +52,8 @@ test('Parcel.addInstallation', (t) => {
         let p = Parcel.addInstallation(Parcel.create(parcelType.size), quarterSizeInstallation)
         t.deepEqual(p.installations[0], quarterSizeInstallation, 'parcel installation matches')
         let p2 = Parcel.addInstallation(p, halfSizeInstallation)
-        t.equals(p.installations.length, 2, 'parcel has two installations')
-        t.deepEqual(p.installations[1], halfSizeInstallation, 'new installation was appended')
+        t.equals(p2.installations.length, 2, 'parcel has two installations')
+        t.deepEqual(p2.installations[1], halfSizeInstallation, 'new installation was appended')
         t.throws(() => Parcel.addInstallation(p2, halfSizeInstallation), 'equipping installation without adequate space throws') 
         t.throws(() => Parcel.addInstallation(p, tooWideInstallation), 'equipping installation that is too wide throws') 
         t.throws(() => Parcel.addInstallation(p, tooTallInstallation), 'equipping installation that is too tall throws') 

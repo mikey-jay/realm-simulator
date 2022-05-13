@@ -2,7 +2,7 @@ const test = require('tape');
 const Harvester = require('../entities/harvester.js')
 const tokens = ['beavis', 'butthead']
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Harvester.create', (t) => {
 

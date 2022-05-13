@@ -1,7 +1,7 @@
 const test = require('tape');
 const Installation = require('../entities/installation.js')
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Installation.create', (t) => {
     const i = Installation.create('harvester')

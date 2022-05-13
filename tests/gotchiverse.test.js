@@ -3,7 +3,7 @@ const Gotchiverse = require('../entities/gotchiverse.js')
 const alchemicaTokens = ['peanut butter', 'jelly time']
 const rules = { rule1: 'a rule', rule2: { rule2a: 'a subrule', rule2b: 'another subrule' }}
 
-test('Tape is working', (t) => { t.true(true); t.end(); });
+ 
 
 test('Gotchiverse.create', (t) => {
     const g = Gotchiverse.create(rules)
