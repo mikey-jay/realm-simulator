@@ -6,7 +6,7 @@ function create (rules) {
 }
 
 function addPlayer (gotchiverseIn, player) {
-    const gotchiverseOut = {...gotchiverseIn}
+    const gotchiverseOut = structuredClone(gotchiverseIn)
     gotchiverseOut.players.push(player)
     return gotchiverseOut
 }

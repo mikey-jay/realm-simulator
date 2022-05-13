@@ -6,13 +6,13 @@ function create(type, buildTime = 0) {
 }
 
 function addBuildTime (installationIn, blockCount) {
-    const installationOut = {...installationIn}
+    const installationOut = structuredClone(installationIn)
     installationOut.buildTimeRemaining += blockCount
     return installationOut
 }
 
 function addLevel (installationIn) {
-    const installationOut = {...installationIn}
+    const installationOut = structuredClone(installationIn)
     installationOut.level += 1
     return installationOut
 }
