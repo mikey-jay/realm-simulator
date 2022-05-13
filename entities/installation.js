@@ -1,7 +1,7 @@
 const installationTypes = ['altar', 'harvester', 'reservoir', 'maker']
 
 function create(type, buildTime = 0) {
-    if (!installationTypes.includes(type)) throw new Error('invalid installation type')
+    if (!installationTypes.includes(type)) throw new Error(`invalid installation type: ${type}`)
     return { type, buildTimeRemaining: buildTime, level: 0, buildLevel: 1 }
 }
 
