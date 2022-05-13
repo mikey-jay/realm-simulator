@@ -73,3 +73,19 @@ test('Parcel.removeInstallation', (t) => {
     t.throws(() => Parcel.removeInstallation(p, -1), 'removing too low of an installation index throws')
     t.end()
 })
+
+test('Parcel.getInstallationTypeCount', (t) => {
+    const i1 = { type: 'type1', width: 1, height: 1 }
+    const i2 = { type: 'type2', width: 2, height: 2 }
+    const i3 = { type: 'type2', width: 2, height: 2 }
+    let p = Parcel.create(parcelTypes[0].size)
+    let p2 = Parcel.addInstallation(p, i1)
+    t.equals(Parcel.getInstallationTypeCount(p2, 'type1'), 1)
+    t.equals(Parcel.getInstallationTypeCount(p2, 'type2'), 0)
+    let p3 = Parcel.addInstallation(p2, i2)
+    let p4 = Parcel.addInstallation(p3, i3)
+    t.equals(Parcel.getInstallationTypeCount(p3, 'type1'), 1)
+    t.equals(Parcel.getInstallationTypeCount(p4, 'type2'), 2)
+    t.equals(Parcel.getInstallationTypeCount(p4, 'not_a_type'), 0)
+    t.end()
+})

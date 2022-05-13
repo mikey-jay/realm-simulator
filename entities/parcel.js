@@ -28,10 +28,15 @@ function addInstallation (parcelIn, installation) {
     return Wallet.addInstallation(parcelOut, installation)
 }
 
+function getInstallationTypeCount (parcelIn, installationType) {
+    return parcelIn.installations.filter((i) => i.type == installationType).length
+}
+
 module.exports = {
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
     addInstallation,
-    removeInstallation: Wallet.removeInstallation
+    removeInstallation: Wallet.removeInstallation,
+    getInstallationTypeCount
 }
