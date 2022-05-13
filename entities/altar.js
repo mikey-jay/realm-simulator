@@ -5,5 +5,8 @@ function create() {
 }
 
 module.exports = {
-    create
+    create,
+    addBuildTime: Installation.addBuildTime,
+    removeBuildTime: Installation.removeBuildTime,
+    addLevel: Installation.addLevel
 }
