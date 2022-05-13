@@ -2,7 +2,7 @@ function create () {
     return { tokens: {}, parcels: [], installations: [], transactions: [], installationsRemoved: [], parcelsRemoved: [] }
 }
 
-function addTokens (walletIn, token, qty) {
+function addSingleToken (walletIn, token, qty) {
     let walletOut = {...walletIn}
     if (Object.keys(walletOut.tokens).includes(token))
         walletOut.tokens[token] += qty
@@ -10,7 +10,15 @@ function addTokens (walletIn, token, qty) {
         walletOut.tokens[token] = qty
     if (walletOut.tokens[token] < 0) throw new Error(`insufficient ${token} token supply`)
     let tx = getCurrentTransaction(walletOut)
-    if (tx) tx = addTokens(tx, token, qty)
+    if (tx) tx = addSingleToken(tx, token, qty)
+    return walletOut
+}
+
+function addSingleOrMultipleTokens (walletIn, tokens, qtyOrMultiplier = 1) {
+    if (typeof tokens == 'string') return addSingleToken (walletIn, tokens, qtyOrMultiplier)
+    let walletOut = {...walletIn}
+    for (t in tokens)
+        walletOut = addSingleToken(walletOut, t, tokens[t] * qtyOrMultiplier)
     return walletOut
 }
 
@@ -52,8 +60,8 @@ function removeParcel (walletIn, parcelIndex) {
     return removeNFT(walletIn, 'parcels', parcelIndex)
 }
 
-function removeTokens (walletIn, token, qty) {
-    return addTokens(walletIn, token, qty * -1)
+function removeTokens (walletIn, token, qty = 1) {
+    return addSingleOrMultipleTokens(walletIn, token, qty * -1)
 }
 
 function startTransaction(walletIn) {
@@ -64,7 +72,7 @@ function startTransaction(walletIn) {
 
 module.exports = {
     create,
-    addTokens,
+    addTokens: addSingleOrMultipleTokens,
     removeTokens,
     addInstallation,
     removeInstallation,

@@ -21,3 +21,20 @@ test('Wallet.startTransaction', (t) => {
     t.end()
 })
 
+test('Wallet.addTokens', (t) => {
+    const w = Wallet.create()
+    const tokens = { token1: 10, token2: 20 }
+    const w2 = Wallet.addTokens(w, tokens)
+    t.deepEqual(w2.tokens, tokens, 'all tokens were added')
+    t.end()
+})
+
+test('Wallet.removeTokens', (t) => {
+    const w = Wallet.create()
+    const tokens = { token1: 10, token2: 20 }
+    const noTokens = { token1: 0, token2: 0 }
+    const w2 = Wallet.addTokens(w, tokens)
+    const w3 = Wallet.removeTokens(w, tokens)
+    t.deepEqual(w3.tokens, noTokens, 'all tokens were removed')
+    t.end()
+})
