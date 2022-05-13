@@ -7,7 +7,8 @@ test('Installation.create', (t) => {
     const i = Installation.create('harvester')
     t.equal(i.type, 'harvester', 'installation type matches')
     t.equal(i.buildTimeRemaining, 0, 'has a build time of zero')
-    t.equal(i.level, 1, 'starts at level 1')
+    t.equal(i.level, 0, 'current level starts at 0')
+    t.equal(i.buildLevel, 1, 'pending build level starts at 1')
     t.throws(() => Installation.create('not_a_valid_type'), 'invalid installation type throws')
     t.end()
 })
@@ -31,6 +32,6 @@ test('Installation.removeBuildTime', (t) => {
 
 test('Installation.addLevel', (t) => {
     const i = Installation.addLevel(Installation.create('harvester'))
-    t.equal(i.level, 2, 'add level changes level to 2')
+    t.equal(i.level, 1, 'add level changes level to 1')
     t.end()
 })
