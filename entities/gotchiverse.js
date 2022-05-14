@@ -2,7 +2,11 @@ const Wallet = require('./wallet.js')
 
 function create (rules) {
     const wallet = Wallet.create()
-    return { rules, players: [], ...wallet }
+    const dao = Wallet.create()
+    const greatPortal = Wallet.create()
+    const pixelCraft = Wallet.create()
+    const burn = Wallet.create()
+    return { rules, dao, greatPortal, pixelCraft, burn, players: [], ...wallet }
 }
 
 function addPlayer (gotchiverseIn, player) {

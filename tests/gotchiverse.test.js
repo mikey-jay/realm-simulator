@@ -9,6 +9,11 @@ test('Gotchiverse.create', (t) => {
     const g = Gotchiverse.create(rules)
     t.equal(g.players.length, 0, 'there are no players')
     t.deepEqual(rules, g.rules, 'rules are set')
+    const supplyWallets = ['pixelCraft', 'greatPortal', 'dao', 'burn']
+    supplyWallets.forEach((wallet) => {
+        console.log(wallet)
+        t.notEqual(typeof g[wallet], 'undefined', `${wallet} wallet is defined`)
+    })
     t.end()
 })
 
