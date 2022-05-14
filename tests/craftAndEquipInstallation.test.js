@@ -54,13 +54,14 @@ test('craftAndEquipInstallation', (t) => {
         let rulesInstantBuild = structuredClone(rules)
         rulesInstantBuild.installations[type].buildTime[0] = 0
         let verseInstantBuild = craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rulesInstantBuild), qualifiedPlayer), 0, 0, type)
-        t.equals(verseInstantBuild.players[0].parcels[0].installations[0].buildTimeRemaining, rulesInstantBuild.installations[type].buildTime[0], 'build time is correct (no build time)')
+        t.equals(verseInstantBuild.players[0].parcels[0].installations[0].timeComplete, verseInstantBuild.currentTime, 'complete time is correct (no build time)')
         t.equals(verseInstantBuild.players[0].parcels[0].installations[0].level, 1, 'instant build should advance immediately to level 1')
 
         let rulesWithBuildTime = structuredClone(rules)
-        rulesWithBuildTime.installations[type].buildTime[0] = 267846
-        let verseWithBuildTime = craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rulesWithBuildTime), qualifiedPlayer), 0, 0, type)
-        t.equals(verseWithBuildTime.players[0].parcels[0].installations[0].buildTimeRemaining, rulesWithBuildTime.installations[type].buildTime[0], 'build time is correct (has build time)')
+        rulesWithBuildTime.installations[type].buildTime[0] = 9
+        let verseWithBuildTime = pipe(Gotchiverse.create(rulesWithBuildTime), [Gotchiverse.addTime, 1], [Gotchiverse.addPlayer, qualifiedPlayer], [craftAndEquipInstallation, 0, 0, type])
+        t.equals(verseWithBuildTime.players[0].parcels[0].installations[0].timeComplete, rulesWithBuildTime.installations[type].buildTime[0] + verseWithBuildTime.currentTime, 'build time is correct (has build time)')
+        t.equals(verseWithBuildTime.players[0].parcels[0].installations[0].level, 0, 'non-instant build should show as level 0')
     })
 
     t.end();

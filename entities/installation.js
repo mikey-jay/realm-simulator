@@ -1,14 +1,8 @@
 const installationTypes = ['altar', 'harvester', 'reservoir', 'maker']
 
-function create(type, buildTime = 0) {
+function create(type, timeComplete = 0) {
     if (!installationTypes.includes(type)) throw new Error(`invalid installation type: ${type}`)
-    return { type, buildTimeRemaining: buildTime, level: 0, buildLevel: 1 }
-}
-
-function addBuildTime (installationIn, blockCount) {
-    const installationOut = structuredClone(installationIn)
-    installationOut.buildTimeRemaining += blockCount
-    return installationOut
+    return { type, timeComplete, level: 0, buildLevel: 1 }
 }
 
 function addLevel (installationIn) {
@@ -23,7 +17,6 @@ function removeBuildTime (installationIn, blockCount) {
 
 module.exports = {
     create,
-    addBuildTime,
     removeBuildTime,
     addLevel,
     installationTypes

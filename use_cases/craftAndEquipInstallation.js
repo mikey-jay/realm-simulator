@@ -15,9 +15,9 @@ module.exports = function (gotchiverseIn, playerIndex, parcelIndex, installation
     installation.width = gotchiverseOut.rules.installations[installation.type].width
     installation.height = gotchiverseOut.rules.installations[installation.type].height
     
-    installation = Installation.addBuildTime(installation, gotchiverseOut.rules.installations[installationType].buildTime[0])
+    installation.timeComplete = gotchiverseOut.currentTime + gotchiverseOut.rules.installations[installationType].buildTime[0]
     
-    if (installation.buildTimeRemaining <= 0)
+    if (installation.timeComplete <= gotchiverseOut.currentTime)
         installation.level = installation.buildLevel
     gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addInstallation(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installation)
     
