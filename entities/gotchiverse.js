@@ -15,10 +15,17 @@ function addPlayer (gotchiverseIn, player) {
     return gotchiverseOut
 }
 
+function addTime (gotchiverseIn, numBlocks) {
+    const gotchiverseOut = structuredClone(gotchiverseIn)
+    gotchiverseOut.currentTime += numBlocks
+    return gotchiverseOut
+}
+
 module.exports = {
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
-    addPlayer
+    addPlayer,
+    addTime
 }
 

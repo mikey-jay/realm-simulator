@@ -7,6 +7,7 @@ const rules = { rule1: 'a rule', rule2: { rule2a: 'a subrule', rule2b: 'another 
 
 test('Gotchiverse.create', (t) => {
     const g = Gotchiverse.create(rules)
+    t.equal(g.currentTime, 0, 'time starts at zero')
     t.equal(g.players.length, 0, 'there are no players')
     t.deepEqual(rules, g.rules, 'rules are set')
     const craftingDistroWallets = ['pixelCraft', 'greatPortal', 'dao', 'burn']
