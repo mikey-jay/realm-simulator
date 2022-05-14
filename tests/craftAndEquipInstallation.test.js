@@ -4,6 +4,7 @@ const Installation = require('../entities/installation.js')
 const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
+const Wallet = require('../entities/wallet.js')
 const rules = require('../rulesets/testRules.js')
 const { pipe } = require('../utils.js')
 
@@ -62,5 +63,19 @@ test('craftAndEquipInstallation', (t) => {
         t.equals(verseWithBuildTime.players[0].parcels[0].installations[0].buildTimeRemaining, rulesWithBuildTime.installations[type].buildTime[0], 'build time is correct (has build time)')
     })
 
+    t.end();
+});
+
+test('craftAndEquipInstallation - crafting revenue distribution', (t) => {
+    const installType = Installation.installationTypes[0]
+    const buildCost = rules.installations[installType].buildCosts[0]
+    const humbleParcel = Parcel.create('humble')
+    const qualifiedPlayer = pipe(Player.create(), [Player.addTokens, buildCost], [Player.addParcel, humbleParcel])
+    const verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer], [craftAndEquipInstallation, 0, 0, installType])
+    
+    Object.keys(rules.craftingRevenueDistribution).forEach((w) => {
+        let distroShare = pipe(Wallet.create(), [Wallet.addTokens, buildCost, rules.craftingRevenueDistribution[w]])
+        t.deepEqual(verse[w], distroShare, `${w} gets ${rules.craftingRevenueDistribution[w] * 100}% of crafting revenue`)
+    });
     t.end();
 });
