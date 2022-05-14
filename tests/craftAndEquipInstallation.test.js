@@ -5,6 +5,7 @@ const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
 const rules = require('../rulesets/testRules.js')
+const { pipe } = require('../utils.js')
 
 test('craftAndEquipInstallation', (t) => {
 
@@ -14,7 +15,7 @@ test('craftAndEquipInstallation', (t) => {
     Installation.installationTypes.forEach( (type) => {
         let zeroTokens = {}
         Object.keys(rules.installations[type].buildCosts[0]).forEach((token) => zeroTokens[token] = 0)
-        const noMoneyNoParcelsPlayer = Player.addTokens(Player.create(), zeroTokens)
+        const noMoneyNoParcelsPlayer = pipe(Player.create(), [Player.addTokens, zeroTokens])
         const noParcelsPlayer = Player.addTokens(noMoneyNoParcelsPlayer, rules.installations[type].buildCosts[0])
         const noMoneyPlayer = Player.addParcel(Player.addParcel(noMoneyNoParcelsPlayer, humbleParcel), spaciousParcel)
         const qualifiedPlayer = Player.addTokens(noMoneyPlayer, rules.installations[type].buildCosts[0])
