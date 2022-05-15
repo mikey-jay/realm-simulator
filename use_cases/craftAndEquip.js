@@ -3,7 +3,7 @@ const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Wallet = require('../entities/wallet.js')
 
-module.exports = function (gotchiverseIn, playerIndex, parcelIndex, installationType) {
+function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationType) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     let installation = Installation.create(installationType)
     let parcelSize = gotchiverseOut.players[playerIndex].parcels[parcelIndex].size
@@ -41,4 +41,28 @@ function spendOnCrafting(gotchiverseIn, playerIndex, buildCosts) {
         gotchiverseOut[recipient] = Wallet.addTokens(gotchiverseOut[recipient], buildCosts, gotchiverseOut.rules.craftingRevenueDistribution[recipient])
     })
     return gotchiverseOut    
+}
+
+function craftAndEquipAltar(gotchiverseIn, playerIndex, parcelIndex) {
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'altar')
+}
+
+function craftAndEquipReservoir(gotchiverseIn, playerIndex, parcelIndex) {
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'reservoir')
+}
+
+function craftAndEquipHarvester(gotchiverseIn, playerIndex, parcelIndex) {
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'harvester')
+}
+
+function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
+}
+
+module.exports = {
+    craftAndEquipInstallation,
+    craftAndEquipAltar,
+    craftAndEquipReservoir,
+    craftAndEquipHarvester,
+    craftAndEquipMaker
 }

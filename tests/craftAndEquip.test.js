@@ -1,5 +1,5 @@
 const test = require('tape');
-const craftAndEquipInstallation = require('../use_cases/craftAndEquipInstallation.js')
+const { craftAndEquipInstallation } = require('../use_cases/craftAndEquip.js')
 const Installation = require('../entities/installation.js')
 const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
