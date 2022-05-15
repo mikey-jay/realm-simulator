@@ -8,7 +8,7 @@ function addSingleToken (walletIn, token, qty) {
         walletOut.tokens[token] += qty
     else
         walletOut.tokens[token] = qty
-    if (walletOut.tokens[token] < 0) throw new Error(`insufficient ${token} token supply`)
+    if (walletOut.tokens[token] < 0) throw new Error(`insufficient ${token} token supply (has ${walletIn.tokens[token]}, requires ${-1 * qty})`)
     return walletOut
 }
 
