@@ -23,6 +23,7 @@ test('craftAndEquipInstallation', (t) => {
     
         // take prerequisites out of the picture for this test
         rules.installations[type].prerequisites = []
+        rules.installations[type].levelPrerequisite = undefined
 
         let verse = craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rules), qualifiedPlayer), 0, 0, type)
         t.equals(verse.players[0].parcels[0].installations.length, 1, 'there is one installation')

@@ -1,5 +1,7 @@
 const Installation = require('../entities/installation.js')
+const parcel = require('../entities/parcel.js')
 const Parcel = require('../entities/parcel.js')
+const { craftUpgrade } = require('./craftUpgrade.js')
 const { spendOnCrafting } = require('./spendOnCrafting.js')
 
 function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationType) {
@@ -19,17 +21,11 @@ function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, ins
 
     installation.width = gotchiverseOut.rules.installations[installation.type].width
     installation.height = gotchiverseOut.rules.installations[installation.type].height
-    
-    installation.timeComplete = gotchiverseOut.currentTime + gotchiverseOut.rules.installations[installationType].buildTime[0]
-    
-    if (installation.timeComplete <= gotchiverseOut.currentTime)
-        installation.level = installation.buildLevel
-    gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addInstallation(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installation)
-    
-    const buildCosts = gotchiverseOut.rules.installations[installationType].buildCosts[0]
-    gotchiverseOut = spendOnCrafting(gotchiverseOut, playerIndex, buildCosts)
 
-    return gotchiverseOut
+    gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addInstallation(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installation)
+
+    // upgrade from level 0 to level 1
+    return craftUpgrade(gotchiverseOut, playerIndex, parcelIndex, gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations.length - 1)
 }
 
 function craftAndEquipAltar(gotchiverseIn, playerIndex, parcelIndex) {

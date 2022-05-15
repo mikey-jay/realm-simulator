@@ -21,6 +21,7 @@ const installationTemplate = {
     width: 1,
     height: 1,
     prerequisites: ['altar'],
+    levelPrerequisite: 'altar'
 }
 
 module.exports = {
@@ -31,7 +32,7 @@ module.exports = {
         burn: 0.5
     },
     installations: {
-        altar: {...structuredClone(installationTemplate), prerequisites: []},
+        altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined},
         reservoir: structuredClone(installationTemplate),
         harvester: structuredClone(installationTemplate),
         maker: structuredClone(installationTemplate)
