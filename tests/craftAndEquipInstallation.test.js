@@ -5,13 +5,13 @@ const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
 const Wallet = require('../entities/wallet.js')
-const rules = require('../rulesets/testRules.js')
 const { pipe } = require('../utils.js')
 
 test('craftAndEquipInstallation', (t) => {
 
     let humbleParcel = Parcel.create('humble')
     let spaciousParcel = Parcel.create('spacious')
+    const rules = require('../rulesets/testRules.js')
 
     Installation.installationTypes.forEach( (type) => {
         let zeroTokens = {}
@@ -21,6 +21,9 @@ test('craftAndEquipInstallation', (t) => {
         const noMoneyPlayer = Player.addParcel(Player.addParcel(noMoneyNoParcelsPlayer, humbleParcel), spaciousParcel)
         const qualifiedPlayer = Player.addTokens(noMoneyPlayer, rules.installations[type].buildCosts[0])
     
+        // take prerequisites out of the picture for this test
+        rules.installations[type].prerequisites = []
+
         let verse = craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rules), qualifiedPlayer), 0, 0, type)
         t.equals(verse.players[0].parcels[0].installations.length, 1, 'there is one installation')
         t.equals(verse.players[0].parcels[0].installations[0].type, type, `there is an installation of type ${type}`)
@@ -68,7 +71,8 @@ test('craftAndEquipInstallation', (t) => {
 });
 
 test('craftAndEquipInstallation - crafting revenue distribution', (t) => {
-    const installType = Installation.installationTypes[0]
+    const rules = require('../rulesets/testRules.js')
+    const installType = 'altar'
     const buildCost = rules.installations[installType].buildCosts[0]
     const humbleParcel = Parcel.create('humble')
     const qualifiedPlayer = pipe(Player.create(), [Player.addTokens, buildCost], [Player.addParcel, humbleParcel])
@@ -78,5 +82,27 @@ test('craftAndEquipInstallation - crafting revenue distribution', (t) => {
         let distroShare = pipe(Wallet.create(), [Wallet.addTokens, buildCost, rules.craftingRevenueDistribution[w]])
         t.deepEqual(verse[w], distroShare, `${w} gets ${rules.craftingRevenueDistribution[w] * 100}% of crafting revenue`)
     });
+    t.end();
+});
+
+/** 
+ * THEN - craft and equip use cases for other installation (combine into craft and equip use case)
+ */
+
+test('craftAndEquipInstallation - installation prerequisites', (t) => {
+    const rules = require('../rulesets/testRules.js')
+
+    const installType = Installation.installationTypes[0]
+    const prereqType = Installation.installationTypes[1]
+
+    rules.installations[installType].prerequisites = [prereqType]
+    rules.installations[prereqType].prerequisites = []
+
+    const humbleParcel = Parcel.create('humble')
+    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations[installType].buildCosts[0]], [Player.addTokens, rules.installations[prereqType].buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
+    t.throws(() => craftAndEquipInstallation(verse, 0, 0, installType), 'cannot craft installation before prerequisite')
+    t.doesNotThrow(() => pipe(verse, [craftAndEquipInstallation, 0, 0, prereqType], [craftAndEquipInstallation, 0, 0, installType]), 'does not throw if prereq is installed first')
+    
     t.end();
 });
