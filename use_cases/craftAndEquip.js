@@ -1,7 +1,6 @@
 const Installation = require('../entities/installation.js')
 const Parcel = require('../entities/parcel.js')
-const Player = require('../entities/player.js')
-const Wallet = require('../entities/wallet.js')
+const { spendOnCrafting } = require('./spendOnCrafting.js')
 
 function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationType) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
@@ -31,16 +30,6 @@ function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, ins
     gotchiverseOut = spendOnCrafting(gotchiverseOut, playerIndex, buildCosts)
 
     return gotchiverseOut
-}
-
-function spendOnCrafting(gotchiverseIn, playerIndex, buildCosts) {
-    let gotchiverseOut = structuredClone(gotchiverseIn)
-    const revenueDistroRecipients = Object.keys(gotchiverseOut.rules.craftingRevenueDistribution)
-    gotchiverseOut.players[playerIndex] = Player.removeTokens(gotchiverseOut.players[playerIndex], buildCosts)
-    revenueDistroRecipients.forEach((recipient) => {
-        gotchiverseOut[recipient] = Wallet.addTokens(gotchiverseOut[recipient], buildCosts, gotchiverseOut.rules.craftingRevenueDistribution[recipient])
-    })
-    return gotchiverseOut    
 }
 
 function craftAndEquipAltar(gotchiverseIn, playerIndex, parcelIndex) {
