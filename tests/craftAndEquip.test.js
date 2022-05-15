@@ -85,9 +85,6 @@ test('craftAndEquipInstallation - crafting revenue distribution', (t) => {
     t.end();
 });
 
-/** 
- * THEN - craft and equip use cases for other installation (combine into craft and equip use case)
- */
 
 test('craftAndEquipInstallation - installation prerequisites', (t) => {
     const rules = require('../rulesets/testRules.js')
