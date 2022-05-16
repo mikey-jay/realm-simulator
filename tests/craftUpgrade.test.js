@@ -2,6 +2,8 @@ const test = require('tape');
 const { craftUpgrade } = require('../use_cases/craftUpgrade.js')
 const { pipe } = require('../utils.js')
 const Installation = require('../entities/installation.js')
+const Harvester = require('../entities/harvester.js')
+const Maker = require('../entities/maker.js')
 const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
@@ -51,11 +53,31 @@ test('upgradeInstallation', (t) => {
     verse.players[0].parcels[0].installations[1].buildLevel = startingLevel
     t.throws(() => craftUpgrade(verse, 0, 0, 1), 'upgrading not allowed if level is limited by another installation\'s level')
 
-    /**
-     * NEXT UP - maker level limits simultaneous upgrades
-     * THEN - on to harvesting use cases (see google doc)
-     */
+    t.end()
+});
 
+test('upgradeInstallation - concurrent upgrade limits', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    const startingLevel = 2
+    const harvesterUpgradeCosts = rules.installations['reservoir_fud'].buildCosts[startingLevel]
+
+    // take prerequisite rules out of the picture
+    rules.installations['harvester_fud'].prerequisites = []
+    rules.installations['harvester_fud'].levelPrerequisite = undefined
+    rules.maxConcurrentUpgrades = 1
+
+    let harvester = Harvester.create('fud')
+    harvester.level = startingLevel
+    harvester.buildLevel = startingLevel
+    let parcelWithInstallations = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvester], [Parcel.addInstallation, harvester])
+    let maker = pipe(Maker.create(), Installation.addLevel)
+    let parcelWithMaker = Parcel.addInstallation(parcelWithInstallations, maker)
+    const playerWithoutMaker = pipe(Player.create(), [Player.addParcel, parcelWithInstallations], [Player.addTokens, harvesterUpgradeCosts, 2])
+    const playerWithMaker = pipe(Player.create(), [Player.addParcel, parcelWithMaker], [Player.addTokens, harvesterUpgradeCosts, 2])
+
+    t.doesNotThrow(() => pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, playerWithoutMaker], [craftUpgrade, 0, 0, 0]), 'trying to upgrade a single installation does not throw')
+    t.throws(() => pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, playerWithoutMaker], [craftUpgrade, 0, 0, 0], [craftUpgrade, 0, 0, 1]), 'trying to upgrade a second installation throws')
+    t.doesNotThrow(() => pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, playerWithMaker], [craftUpgrade, 0, 0, 0], [craftUpgrade, 0, 0, 1]), 'trying to upgrade a second installation with a maker does not throw')
 
     t.end()
 });

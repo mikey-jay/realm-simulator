@@ -1,5 +1,6 @@
 
 const { spendOnCrafting } = require('./spendOnCrafting.js')
+const Parcel = require('../entities/parcel.js')
 
 function craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, installationIndex) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
@@ -15,6 +16,15 @@ function craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, installationIndex
     if (typeof levelPrerequisite != 'undefined') {
         const maxLevel = Math.max(0,...gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations.filter((i) => levelPrerequisite == i.type).map((i) => i.level))
         if (buildLevel > maxLevel) throw new Error(`${installationType} cannot exceed maximum level of the highest level ${levelPrerequisite}`)
+    }
+
+    let maxConcurrentUpgrades = gotchiverseOut.rules.maxConcurrentUpgrades
+    if (typeof maxConcurrentUpgrades != 'undefined') {
+        let concurrentUpgrades = Parcel.getCurrentUpgradeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex])
+        const makerLevelCount = Parcel.getInstallationLevelCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], 'maker')
+        for (let l = 0 ; l < makerLevelCount.length ; l++)
+            maxConcurrentUpgrades += makerLevelCount[l] * gotchiverseOut.rules.installations.maker.concurrentUpgradeIncreases[l]
+        if (concurrentUpgrades > maxConcurrentUpgrades) throw new Error(`Maximum concurrent upgrade limit of ${maxConcurrentUpgrades} has been reached`)
     }
  
     gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations[installationIndex].timeComplete = gotchiverseOut.currentTime + buildTime

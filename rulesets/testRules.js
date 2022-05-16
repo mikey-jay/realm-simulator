@@ -31,6 +31,7 @@ module.exports = {
         dao: 0.3,
         burn: 0.5
     },
+    maxConcurrentUpgrades: undefined,
     installations: {
         altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined},
         reservoir_fud: structuredClone(installationTemplate),
@@ -41,6 +42,6 @@ module.exports = {
         harvester_fomo: structuredClone(installationTemplate),
         harvester_alpha: structuredClone(installationTemplate),
         harvester_kek: structuredClone(installationTemplate),
-        maker: structuredClone(installationTemplate)
+        maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
     }
 }
