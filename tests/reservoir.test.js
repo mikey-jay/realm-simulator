@@ -11,6 +11,7 @@ test('Reservoir.create', (t) => {
     tokens.forEach( (token) => {
         const a = Reservoir.create(token)
         t.equal(a.type, `reservoir_${token}`, 'installation type matches')
+        t.equal(a.class, `reservoir`, 'installation class matches')
         t.equal(a.resourceToken, token, `${token} token matches`)
     })
 
