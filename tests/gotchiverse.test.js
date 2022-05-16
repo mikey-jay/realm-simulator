@@ -10,8 +10,8 @@ test('Gotchiverse.create', (t) => {
     t.equal(g.currentTime, 0, 'time starts at zero')
     t.equal(g.players.length, 0, 'there are no players')
     t.deepEqual(rules, g.rules, 'rules are set')
-    const craftingDistroWallets = ['pixelCraft', 'greatPortal', 'dao', 'burn']
-    craftingDistroWallets.forEach((wallet) => {
+    const distroWallets = ['pixelCraft', 'greatPortal', 'dao', 'burn', 'spillover']
+    distroWallets.forEach((wallet) => {
         console.log(wallet)
         t.notEqual(typeof g[wallet], 'undefined', `${wallet} wallet is defined`)
     })

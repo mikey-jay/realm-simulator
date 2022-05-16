@@ -6,7 +6,9 @@ function create (rules) {
     const greatPortal = Wallet.create()
     const pixelCraft = Wallet.create()
     const burn = Wallet.create()
-    return { rules, currentTime: 0, dao, greatPortal, pixelCraft, burn, players: [], ...wallet }
+    const spillover = Wallet.create()
+
+    return { rules, currentTime: 0, dao, greatPortal, pixelCraft, burn, spillover, players: [], ...wallet }
 }
 
 function addPlayer (gotchiverseIn, player) {
