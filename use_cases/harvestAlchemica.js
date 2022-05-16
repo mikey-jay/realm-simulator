@@ -1,4 +1,3 @@
-const parcel = require('../entities/parcel.js')
 const Parcel = require('../entities/parcel.js')
 const Reservoir = require('../entities/reservoir.js')
 

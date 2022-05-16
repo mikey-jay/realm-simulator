@@ -25,8 +25,7 @@ const installationTemplate = {
 }
 const harvesterTemplate = {
     ...installationTemplate,
-    harvestRates: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ],
-    spilloverRates: [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    harvestRates: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
 }
 const reservoirTemplate = {
     ...installationTemplate,
