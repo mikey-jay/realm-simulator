@@ -20,11 +20,22 @@ const installationTemplate = {
     },
     width: 1,
     height: 1,
-    prerequisites: ['altar'],
-    levelPrerequisite: 'altar'
+    prerequisites: [],
+    levelPrerequisite: undefined
+}
+const harvesterTemplate = {
+    ...installationTemplate,
+    harvestRates: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ],
+    spilloverRates: [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+}
+const reservoirTemplate = {
+    ...installationTemplate,
+    spilloverRates: [ 50, 45, 40, 35, 30, 25, 20, 15, 10 ],
+    capacities: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
 }
 
 module.exports = {
+    secondsPerBlock: 2.3,
     craftingRevenueDistribution: {
         greatPortal: 0.35,
         pixelCraft: 0.3,
@@ -34,14 +45,14 @@ module.exports = {
     maxConcurrentUpgrades: undefined,
     installations: {
         altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined},
-        reservoir_fud: structuredClone(installationTemplate),
-        reservoir_fomo: structuredClone(installationTemplate),
-        reservoir_alpha: structuredClone(installationTemplate),
-        reservoir_kek: structuredClone(installationTemplate),
-        harvester_fud: structuredClone(installationTemplate),
-        harvester_fomo: structuredClone(installationTemplate),
-        harvester_alpha: structuredClone(installationTemplate),
-        harvester_kek: structuredClone(installationTemplate),
+        reservoir_fud: structuredClone(reservoirTemplate),
+        reservoir_fomo: structuredClone(reservoirTemplate),
+        reservoir_alpha: structuredClone(reservoirTemplate),
+        reservoir_kek: structuredClone(reservoirTemplate),
+        harvester_fud: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_fud'},
+        harvester_fomo: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_fomo'},
+        harvester_alpha: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_alpha'},
+        harvester_kek: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_kek'},
         maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
     }
 }
