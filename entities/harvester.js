@@ -5,5 +5,6 @@ function create(resourceToken) {
 }
 
 module.exports = {
+    ...Installation,
     create
 }
