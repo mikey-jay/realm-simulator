@@ -32,12 +32,20 @@ function getInstallationTypeCount (parcelIn, installationType) {
     return getInstallationsOfType(parcelIn, installationType).length
 }
 
-function getInstallationTypeIndexes (parcelIn, installationType) {
+function getInstallationPropertyIndexes (parcelIn, property, value) {
     let indexes = []
     for (let i = 0 ; i < parcelIn.installations.length ; i++) {
-        if (parcelIn.installations[i].type == installationType) indexes.push(i)
+        if (parcelIn.installations[i][property] == value) indexes.push(i)
     }
     return indexes
+}
+
+function getInstallationTypeIndexes (parcelIn, installationType) {
+    return getInstallationPropertyIndexes(parcelIn, 'type', installationType)
+}
+
+function getInstallationClassIndexes (parcelIn, installationClass) {
+    return getInstallationPropertyIndexes(parcelIn, 'class', installationClass)
 }
 
 function getInstallationsOfType (parcelIn, installationType) {
@@ -65,5 +73,6 @@ module.exports = {
     getInstallationLevelCount,
     getInstallationsOfType,
     getInstallationTypeIndexes,
+    getInstallationClassIndexes,
     getCurrentUpgradeCount
 }
