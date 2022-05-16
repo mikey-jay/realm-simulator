@@ -1,12 +1,15 @@
 const Installation = require('../entities/installation.js')
-const parcel = require('../entities/parcel.js')
+const Harvester = require('../entities/harvester.js')
+const Reservoir = require('../entities/reservoir.js')
+const Maker = require('../entities/installation.js')
+const Altar = require('../entities/installation.js')
 const Parcel = require('../entities/parcel.js')
 const { craftUpgrade } = require('./craftUpgrade.js')
 const { spendOnCrafting } = require('./spendOnCrafting.js')
 
-function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationType) {
+function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationTypeOrFactory, ...factoryArgs) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
-    let installation = Installation.create(installationType)
+    let installation = (typeof installationTypeOrFactory == 'function') ? installationTypeOrFactory(...factoryArgs) : Installation.create(installationTypeOrFactory)
     let parcelSize = gotchiverseOut.players[playerIndex].parcels[parcelIndex].size
     let maxInstallationsAllowed = gotchiverseOut.rules.installations[installation.type].maxQuantityPerParcel[parcelSize]
     const prerequisites = gotchiverseOut.rules.installations[installation.type].prerequisites
@@ -29,15 +32,15 @@ function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, ins
 }
 
 function craftAndEquipAltar(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'altar')
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Altar.create)
 }
 
-function craftAndEquipReservoir(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'reservoir')
+function craftAndEquipReservoir(gotchiverseIn, playerIndex, parcelIndex, resourceToken) {
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Reservoir.create, resourceToken)
 }
 
 function craftAndEquipHarvester(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'harvester')
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Harvester.create, resourceToken)
 }
 
 function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
