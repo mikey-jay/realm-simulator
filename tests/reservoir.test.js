@@ -7,10 +7,10 @@ const tokens = ['taco', 'bell']
 test('Reservoir.create', (t) => {
 
     const a = Reservoir.create(tokens[0])
-    t.equal(a.type, 'reservoir', 'installation type matches')
 
     tokens.forEach( (token) => {
         const a = Reservoir.create(token)
+        t.equal(a.type, `reservoir_${token}`, 'installation type matches')
         t.equal(a.resourceToken, token, `${token} token matches`)
     })
 

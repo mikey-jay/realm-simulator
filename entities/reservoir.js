@@ -3,7 +3,7 @@ const Wallet = require('./wallet.js')
 
 function create(resourceToken) {
     if (!resourceToken) throw new Error ('Must specify token for reservoir')
-    return { resourceToken, ...Installation.create('reservoir'), ...Wallet.create() }
+    return { resourceToken, ...Installation.create(`reservoir_${resourceToken}`), ...Wallet.create() }
 }
 
 function addAlchemica(reservoirIn, qty) {

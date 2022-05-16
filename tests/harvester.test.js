@@ -6,11 +6,9 @@ const tokens = ['beavis', 'butthead']
 
 test('Harvester.create', (t) => {
 
-    const a = Harvester.create( tokens[0] )
-    t.equal(a.type, 'harvester', 'installation type matches')
-
     tokens.forEach( (token) => {
         const a = Harvester.create(token)
+        t.equal(a.type, `harvester_${token}`, 'installation type matches')
         t.equal(a.resourceToken, token, `${token} token matches`)
     })
     t.end()

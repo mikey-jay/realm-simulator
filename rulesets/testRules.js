@@ -33,8 +33,14 @@ module.exports = {
     },
     installations: {
         altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined},
-        reservoir: structuredClone(installationTemplate),
-        harvester: structuredClone(installationTemplate),
+        reservoir_fud: structuredClone(installationTemplate),
+        reservoir_fomo: structuredClone(installationTemplate),
+        reservoir_alpha: structuredClone(installationTemplate),
+        reservoir_kek: structuredClone(installationTemplate),
+        harvester_fud: structuredClone(installationTemplate),
+        harvester_fomo: structuredClone(installationTemplate),
+        harvester_alpha: structuredClone(installationTemplate),
+        harvester_kek: structuredClone(installationTemplate),
         maker: structuredClone(installationTemplate)
     }
 }
