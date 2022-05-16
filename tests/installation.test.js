@@ -9,7 +9,6 @@ test('Installation.create', (t) => {
     t.equal(i.timeComplete, 0, 'has time completed')
     t.equal(i.level, 0, 'current level starts at 0')
     t.equal(i.buildLevel, 0, 'build level starts at 0')
-    t.throws(() => Installation.create('not_a_valid_type'), 'invalid installation type throws')
     t.end()
 })
 

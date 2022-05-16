@@ -51,5 +51,11 @@ test('upgradeInstallation', (t) => {
     verse.players[0].parcels[0].installations[1].buildLevel = startingLevel
     t.throws(() => craftUpgrade(verse, 0, 0, 1), 'upgrading not allowed if level is limited by another installation\'s level')
 
+    /**
+     * NEXT UP - maker level limits simultaneous upgrades
+     * THEN - on to harvesting use cases (see google doc)
+     */
+
+
     t.end()
 });

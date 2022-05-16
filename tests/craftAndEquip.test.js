@@ -12,8 +12,9 @@ test('craftAndEquipInstallation', (t) => {
     let humbleParcel = Parcel.create('humble')
     let spaciousParcel = Parcel.create('spacious')
     const rules = require('../rulesets/testRules.js')
+    const installTypes = Object.keys(rules.installations)
 
-    Installation.installationTypes.forEach( (type) => {
+    installTypes.forEach( (type) => {
         let zeroTokens = {}
         Object.keys(rules.installations[type].buildCosts[0]).forEach((token) => zeroTokens[token] = 0)
         const noMoneyNoParcelsPlayer = pipe(Player.create(), [Player.addTokens, zeroTokens])
@@ -89,18 +90,19 @@ test('craftAndEquipInstallation - crafting revenue distribution', (t) => {
 
 test('craftAndEquipInstallation - installation prerequisites', (t) => {
     const rules = require('../rulesets/testRules.js')
+    const installTypes = Object.keys(rules.installations)
 
-    const installType = Installation.installationTypes[0]
-    const prereqType = Installation.installationTypes[1]
+    const type = installTypes[0]
+    const prereqType = installTypes[1]
 
-    rules.installations[installType].prerequisites = [prereqType]
+    rules.installations[type].prerequisites = [prereqType]
     rules.installations[prereqType].prerequisites = []
 
     const humbleParcel = Parcel.create('humble')
-    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations[installType].buildCosts[0]], [Player.addTokens, rules.installations[prereqType].buildCosts[0]])
+    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations[type].buildCosts[0]], [Player.addTokens, rules.installations[prereqType].buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
-    t.throws(() => craftAndEquipInstallation(verse, 0, 0, installType), 'cannot craft installation before prerequisite')
-    t.doesNotThrow(() => pipe(verse, [craftAndEquipInstallation, 0, 0, prereqType], [craftAndEquipInstallation, 0, 0, installType]), 'does not throw if prereq is installed first')
+    t.throws(() => craftAndEquipInstallation(verse, 0, 0, type), 'cannot craft installation before prerequisite')
+    t.doesNotThrow(() => pipe(verse, [craftAndEquipInstallation, 0, 0, prereqType], [craftAndEquipInstallation, 0, 0, type]), 'does not throw if prereq is installed first')
     
     t.end();
 });
