@@ -1,17 +1,17 @@
 const Installation = require('./installation.js')
 const Wallet = require('./wallet.js')
 
-function create(token) {
-    if (!token) throw new Error ('Must specify token for reservoir')
-    return { token, ...Installation.create('reservoir'), ...Wallet.create() }
+function create(resourceToken) {
+    if (!resourceToken) throw new Error ('Must specify token for reservoir')
+    return { resourceToken, ...Installation.create('reservoir'), ...Wallet.create() }
 }
 
 function addAlchemica(reservoirIn, qty) {
-    return Wallet.addTokens(reservoirIn, reservoirIn.token, qty)
+    return Wallet.addTokens(reservoirIn, reservoirIn.resourceToken, qty)
 }
 
 function removeAlchemica(reservoirIn, qty) {
-    return Wallet.removeTokens(reservoirIn, reservoirIn.token, qty)
+    return Wallet.removeTokens(reservoirIn, reservoirIn.resourceToken, qty)
 }
 
 module.exports = {

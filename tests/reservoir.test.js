@@ -11,7 +11,7 @@ test('Reservoir.create', (t) => {
 
     tokens.forEach( (token) => {
         const a = Reservoir.create(token)
-        t.equal(a.token, token, `${token} token matches`)
+        t.equal(a.resourceToken, token, `${token} token matches`)
     })
 
     t.throws(() => Reservoir.create(), 'throws if no token is specified')
@@ -21,9 +21,9 @@ test('Reservoir.create', (t) => {
 test('Reservoir.addAlchemica', (t) => {
     r = Reservoir.create(tokens[0])
     let r1 = Reservoir.addAlchemica(r, 250)
-    t.equal(r1.tokens[r.token], 250)
+    t.equal(r1.tokens[r.resourceToken], 250)
     let r2 = Reservoir.addAlchemica(r1, 200)
-    t.equal(r2.tokens[r.token], 450)
+    t.equal(r2.tokens[r.resourceToken], 450)
     t.end()
 })
 
@@ -31,7 +31,7 @@ test('Reservoir.removeAlchemica', (t) => {
     const r = Reservoir.create(tokens[0])
     let r1 = Reservoir.addAlchemica(r, 250)
     let r2 = Reservoir.removeAlchemica(r1, 100)
-    t.equal(r2.tokens[r2.token], 150)
+    t.equal(r2.tokens[r2.resourceToken], 150)
     t.end()
 })
 

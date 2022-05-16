@@ -11,7 +11,7 @@ test('Harvester.create', (t) => {
 
     tokens.forEach( (token) => {
         const a = Harvester.create(token)
-        t.equal(a.token, token, `${token} token matches`)
+        t.equal(a.resourceToken, token, `${token} token matches`)
     })
     t.end()
 })
