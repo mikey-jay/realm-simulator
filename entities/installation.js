@@ -5,6 +5,7 @@ function create(type, installationClass, timeComplete = 0) {
 function addLevel (installationIn) {
     const installationOut = structuredClone(installationIn)
     installationOut.level += 1
+    installationOut.buildLevel = installationOut.level
     return installationOut
 }
 
