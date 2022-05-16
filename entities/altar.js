@@ -5,6 +5,7 @@ function create() {
 }
 
 module.exports = {
+    ...Installation,
     create,
     addBuildTime: Installation.addBuildTime,
     removeBuildTime: Installation.removeBuildTime,

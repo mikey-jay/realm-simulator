@@ -5,5 +5,6 @@ function create() {
 }
 
 module.exports = {
+    ...Installation,
     create
 }
