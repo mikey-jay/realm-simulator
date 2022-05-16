@@ -34,6 +34,12 @@ function removeNFT (walletIn, type, index) {
     return walletOut
 }
 
+function getTokenBalance (walletIn, token) {
+    if (Object.keys(walletIn.tokens).includes(token))
+        return walletIn.tokens[token]
+    return 0
+}
+
 function addInstallation (parcelIn, installation) {
     return addNFT(parcelIn, 'installations', installation)
 }
@@ -61,5 +67,6 @@ module.exports = {
     addInstallation,
     removeInstallation,
     addParcel,
-    removeParcel
+    removeParcel,
+    getTokenBalance
 }
