@@ -14,8 +14,14 @@ function removeAlchemica(reservoirIn, qty) {
     return Wallet.removeTokens(reservoirIn, reservoirIn.resourceToken, qty)
 }
 
+function getBalance(reservoirIn) {
+    return Wallet.getTokenBalance(reservoirIn, reservoirIn.resourceToken)
+}
+
 module.exports = {
+    ...Installation,
     create,
     addAlchemica,
-    removeAlchemica
+    removeAlchemica,
+    getBalance
 }
