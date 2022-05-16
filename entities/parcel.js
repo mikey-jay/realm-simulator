@@ -32,11 +32,23 @@ function getInstallationTypeCount (parcelIn, installationType) {
     return parcelIn.installations.filter((i) => i.type == installationType).length
 }
 
+function getInstallationLevelCount (parcelIn, installationType) {
+    let count = [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    parcelIn.installations.filter((i) => i.type == installationType).forEach((i) => count[i.level - 1]++)
+    return count
+}
+
+function getCurrentUpgradeCount (parcelIn) {
+    return parcelIn.installations.filter((i) => i.buildLevel != i.level && i.buildLevel > 1).length
+}
+
 module.exports = {
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
     addInstallation,
     removeInstallation: Wallet.removeInstallation,
-    getInstallationTypeCount
+    getInstallationTypeCount,
+    getInstallationLevelCount,
+    getCurrentUpgradeCount
 }
