@@ -29,7 +29,19 @@ function addInstallation (parcelIn, installation) {
 }
 
 function getInstallationTypeCount (parcelIn, installationType) {
-    return parcelIn.installations.filter((i) => i.type == installationType).length
+    return getInstallationsOfType(parcelIn, installationType).length
+}
+
+function getInstallationTypeIndexes (parcelIn, installationType) {
+    let indexes = []
+    for (let i = 0 ; i < parcelIn.installations.length ; i++) {
+        if (parcelIn.installations[i].type == installationType) indexes.push(i)
+    }
+    return indexes
+}
+
+function getInstallationsOfType (parcelIn, installationType) {
+    return parcelIn.installations.filter((i) => i.type == installationType)
 }
 
 function getInstallationLevelCount (parcelIn, installationType) {
@@ -43,6 +55,7 @@ function getCurrentUpgradeCount (parcelIn) {
 }
 
 module.exports = {
+    ...Wallet,
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
@@ -50,5 +63,7 @@ module.exports = {
     removeInstallation: Wallet.removeInstallation,
     getInstallationTypeCount,
     getInstallationLevelCount,
+    getInstallationsOfType,
+    getInstallationTypeIndexes,
     getCurrentUpgradeCount
 }
