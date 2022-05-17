@@ -8,7 +8,7 @@ function create (rules) {
     const burn = Wallet.create()
     const spillover = Wallet.create()
 
-    return { rules, currentTime: 0, dao, greatPortal, pixelCraft, burn, spillover, players: [], ...wallet }
+    return { rules, currentTime: 0, currentRound: 0, dao, greatPortal, pixelCraft, burn, spillover, players: [], ...wallet }
 }
 
 function addPlayer (gotchiverseIn, player) {
@@ -23,11 +23,18 @@ function addTime (gotchiverseIn, numBlocks) {
     return gotchiverseOut
 }
 
+function addRound (gotchiverseIn) {
+    const gotchiverseOut = structuredClone(gotchiverseIn)
+    gotchiverseOut.currentRound += 1
+    return gotchiverseOut
+}
+
 module.exports = {
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
     addPlayer,
-    addTime
+    addTime,
+    addRound
 }
 
