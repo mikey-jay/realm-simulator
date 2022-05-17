@@ -33,8 +33,11 @@ const reservoirTemplate = {
     capacities: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
 }
 
+const secondsPerBlock = 2.3
+
 module.exports = {
-    secondsPerBlock: 2.3,
+    secondsPerBlock,
+    passTimeBlocks: 60 / secondsPerBlock * 60 * 8, // 8 hours between reservoir emptying
     craftingRevenueDistribution: {
         greatPortal: 0.35,
         pixelCraft: 0.3,
