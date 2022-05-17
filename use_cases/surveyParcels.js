@@ -9,7 +9,9 @@ function surveySingleParcel (gotchiverseIn, playerIndex, parcelIndex) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     const parcelSize = gotchiverseOut.players[playerIndex].parcels[parcelIndex].size
     const distributionRate = gotchiverseOut.rules.surveyingRoundDistributionRates[gotchiverseOut.currentRound - 1]
-    gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addAlchemica(gotchiverseOut.players[playerIndex].parcels[parcelIndex], gotchiverseOut.rules.avgBaseAlchemicaPerParcel[parcelSize], distributionRate)
+    const baseAlchemica = gotchiverseOut.rules.avgBaseAlchemicaPerParcel[parcelSize]
+    gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addAlchemica(gotchiverseOut.players[playerIndex].parcels[parcelIndex], baseAlchemica, distributionRate)
+    gotchiverseOut = Wallet.removeTokens(gotchiverseOut, baseAlchemica, distributionRate)
     return gotchiverseOut
 }
 

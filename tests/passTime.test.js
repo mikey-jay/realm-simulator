@@ -21,7 +21,7 @@ test('passTime', (t) => {
     const spaciousParcel = pipe(Parcel.create('spacious'))
     let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addParcel, spaciousParcel])
     
-    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addAlchemica, rules.parcelTokenAllocation], [Gotchiverse.addPlayer, qualifiedPlayer])
 
     const result = passTime(verse)
     const daysPassed = rules.passTimeBlocks * rules.secondsPerBlock / 60 / 60 / 24
