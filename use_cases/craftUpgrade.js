@@ -41,7 +41,20 @@ function levelUpIfUpgradeComplete(gotchiverseIn, playerIndex, parcelIndex, insta
     return gotchiverseOut
 }
 
+function levelUpAllCompletedUpgrades(gotchiverseIn) {
+    let gotchiverseOut = structuredClone(gotchiverseIn)
+    for (let playerIndex = 0 ; playerIndex < gotchiverseOut.players.length ; playerIndex++) {
+        for (let parcelIndex = 0 ; parcelIndex < gotchiverseOut.players[playerIndex].parcels.length ; parcelIndex++) {
+           for (let installationIndex = 0 ; installationIndex < gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations.length ; installationIndex++) {
+               gotchiverseOut = levelUpIfUpgradeComplete(gotchiverseOut, playerIndex, parcelIndex, installationIndex)
+           }
+        }
+    }
+    return gotchiverseOut
+}
+
 module.exports = {
    craftUpgrade,
-   levelUpIfUpgradeComplete
+   levelUpIfUpgradeComplete,
+   levelUpAllCompletedUpgrades
 }
