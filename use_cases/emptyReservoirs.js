@@ -4,7 +4,6 @@ const Player = require('../entities/player.js')
 const Wallet = require('../entities/wallet.js')
 
 const { getWeightedAverage } = require('../utils.js')
-const player = require('../entities/player.js')
 
 function emptyParcelReservoirs (gotchiverseIn, playerIndex, parcelIndex) {
     const gotchiverseOut = structuredClone(gotchiverseIn)
