@@ -1,5 +1,5 @@
 const test = require('tape');
-const { emptyReservoirs } = require('../use_cases/emptyReservoirs.js')
+const { emptyReservoirs, emptyParcelReservoirs } = require('../use_cases/emptyReservoirs.js')
 const { pipe } = require('../utils.js')
 const Reservoir = require('../entities/reservoir.js')
 const Parcel = require('../entities/parcel.js')
@@ -7,7 +7,7 @@ const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
 const Wallet = require('../entities/wallet.js')
 
-test('emptyReservoirs', (t) => {
+test('emptyReservoirs, emptyParcelReservoirs', (t) => {
     const rules = require('../rulesets/testRules.js')
     const token1 = 'fomo'
     const token2 = 'kek'
@@ -24,15 +24,19 @@ test('emptyReservoirs', (t) => {
     const totalSpilloverRate = (spilloverRateL2 * capacityL2 + spilloverRateL1 * capacityL1) / (capacityL2 + capacityL1)
     
     let playerParcel = pipe(Parcel.create('reasonable'), [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, reservoirL2], [Parcel.addInstallation, differentTypeReservoir]) 
-    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, playerParcel])
+    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, playerParcel], [Player.addParcel, playerParcel])
     
-    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer], [Gotchiverse.addPlayer, qualifiedPlayer])
 
-    const result = emptyReservoirs(verse, 0, 0)
+    const result = emptyParcelReservoirs(verse, 0, 0)
     t.equals(Reservoir.getBalance(result.players[0].parcels[0].installations[0]), 0, 'reservoir is empty')
     t.equals(Player.getTokenBalance(result.players[0], token1), reservoirBalance * (1 - totalSpilloverRate), 'player has reservoir balance less spillover')
     t.equals(Wallet.getTokenBalance(result.spillover, token1), reservoirBalance * totalSpilloverRate, 'spillover wallet has spillover')
     t.equals(Player.getTokenBalance(result.players[0], token2), reservoirBalance * (1 - spilloverRateL1), 'player has reservoir (second type) balance less spillover')
+    
+    const result2 = emptyReservoirs(verse)
+    t.equals(Reservoir.getBalance(result2.players[0].parcels[1].installations[0]), 0, 'second parcel reservoir is empty')
+    t.equals(Reservoir.getBalance(result2.players[1].parcels[0].installations[0]), 0, 'second player reservoir is empty')
 
     t.end()
 })
