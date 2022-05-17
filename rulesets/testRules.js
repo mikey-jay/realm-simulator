@@ -34,10 +34,72 @@ const reservoirTemplate = {
 }
 
 const secondsPerBlock = 2.3
+const surveyingActBlocks = 60 / secondsPerBlock * 60 * 24 * 365 * 2 // 2 years
+const surveyingRoundBlocks = surveyingActBlocks / 4
 
 module.exports = {
     secondsPerBlock,
     passTimeBlocks: 60 / secondsPerBlock * 60 * 8, // 8 hours between reservoir emptying
+    parcelTokenAllocation: {
+        fud: 100 * 10**9,
+        fomo: 50 * 10**9,
+        alpha: 25 * 10**9,
+        kek: 10 * 10**9
+    },
+    surveyingRoundStartTimes: [
+        0,
+        surveyingRoundBlocks,
+        surveyingRoundBlocks * 2,
+        surveyingRoundBlocks * 3,
+        surveyingRoundBlocks * 4,
+        surveyingRoundBlocks * 5,
+        surveyingRoundBlocks * 6,
+        surveyingRoundBlocks * 7,
+        surveyingRoundBlocks * 8,
+        surveyingRoundBlocks * 9,
+        surveyingRoundBlocks * 10,
+        surveyingRoundBlocks * 11
+    ],
+    surveyingRoundDistributionRates: [
+        0.5 / 4,
+        0.5 / 4,
+        0.5 / 4,
+        0.5 / 4,
+        0.3 / 4,
+        0.3 / 4,
+        0.3 / 4,
+        0.3 / 4,
+        0.2 / 4,
+        0.2 / 4,
+        0.2 / 4,
+        0.2 / 4
+    ],
+    avgBaseAlchemicaPerParcel: {
+        humble: {
+            fud: 28473 * 2,
+            fomo: 14237 * 2,
+            alpha: 7118 * 2,
+            kek: 2847 * 2
+        },
+        reasonable: {
+            fud: 113893 * 2,
+            fomo: 56947 * 2,
+            alpha: 28473 * 2,
+            kek: 11389 * 2
+        },
+        spacious: {
+            fud: 911145 * 2,
+            fomo: 455573 * 2,
+            alpha: 227786 * 2,
+            kek: 91115 * 2
+        },
+        partner: {
+            fud: 1822290 * 2,
+            fomo: 911145 * 2,
+            alpha: 455573 * 2,
+            kek: 182229 * 2
+        }
+    },
     craftingRevenueDistribution: {
         greatPortal: 0.35,
         pixelCraft: 0.3,
