@@ -39,7 +39,6 @@ const surveyingRoundBlocks = surveyingActBlocks / 4
 
 module.exports = {
     secondsPerBlock,
-    passTimeBlocks: 60 / secondsPerBlock * 60 * 8, // 8 hours between reservoir emptying
     parcelTokenAllocation: {
         fud: 100 * 10**9 * 0.5,
         fomo: 50 * 10**9 * 0.5,

@@ -6,12 +6,12 @@ const { surveyParcelsAndAdvanceRound } = require('./surveyParcels.js')
 
 const { pipe } = require('../utils.js')
 
-function passTime(gotchiverseIn) {
+function passTime(gotchiverseIn, passTimeBlocks = 0) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
-    gotchiverseOut.currentTime += gotchiverseOut.rules.passTimeBlocks
+    gotchiverseOut.currentTime += passTimeBlocks
     if (gotchiverseOut.currentRound < gotchiverseOut.rules.surveyingRoundStartTimes.filter((time) => time <= gotchiverseOut.currentTime).length)
         gotchiverseOut = surveyParcelsAndAdvanceRound(gotchiverseOut)
-    gotchiverseOut = pipe(gotchiverseOut, [harvestAlchemica, gotchiverseOut.rules.passTimeBlocks], emptyReservoirs, levelUpAllCompletedUpgrades)
+    gotchiverseOut = pipe(gotchiverseOut, [harvestAlchemica, passTimeBlocks], emptyReservoirs, levelUpAllCompletedUpgrades)
     return gotchiverseOut
 }
 
