@@ -2,7 +2,7 @@ const Parcel = require('../entities/parcel.js')
 const Reservoir = require('../entities/reservoir.js')
 
 
-function harvestAlchemica(gotchiverseIn, playerIndex, parcelIndex, installationIndex, blockCount) {
+function harvestWithSingleHarvester(gotchiverseIn, playerIndex, parcelIndex, installationIndex, durationInBlocks) {
     const gotchiverseOut = structuredClone(gotchiverseIn)
     const playerParcel = gotchiverseOut.players[playerIndex].parcels[parcelIndex]
     const playerHarvester = playerParcel.installations[installationIndex]
@@ -13,7 +13,7 @@ function harvestAlchemica(gotchiverseIn, playerIndex, parcelIndex, installationI
     if (playerHarvester.class != 'harvester') throw new Error('Can only harvest alchemica from harvesters')
 
     const harvestRate = rules.installations[playerHarvester.type].harvestRates[playerHarvester.level - 1]
-    let harvestQtyRemaining = harvestRate * (blockCount / oneDayInBlocks)
+    let harvestQtyRemaining = harvestRate * (durationInBlocks / oneDayInBlocks)
 
     for (let i = 0 ; i < gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations.length && harvestQtyRemaining > 0 ; i++) {
         if (gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations[i].type == useReservoirType) {
@@ -30,6 +30,26 @@ function harvestAlchemica(gotchiverseIn, playerIndex, parcelIndex, installationI
     return gotchiverseOut
 }
 
+function harvestAlchemicaFromParcel(gotchiverseIn, playerIndex, parcelIndex, durationInBlocks) {
+    let gotchiverseOut = structuredClone(gotchiverseIn)
+    Parcel.getInstallationClassIndexes(gotchiverseOut.players[playerIndex].parcels[parcelIndex], 'harvester').forEach((installationIndex) => {
+        gotchiverseOut = harvestWithSingleHarvester(gotchiverseOut, playerIndex, parcelIndex, installationIndex, durationInBlocks)
+    })
+    return gotchiverseOut
+}
+
+function harvestAlchemica(gotchiverseIn, durationInBlocks) {
+    let gotchiverseOut = structuredClone(gotchiverseIn)
+    for (let playerIndex = 0 ; playerIndex < gotchiverseOut.players.length ; playerIndex++) {
+        for (let parcelIndex = 0 ; parcelIndex < gotchiverseOut.players[playerIndex].parcels.length ; parcelIndex++) {
+            gotchiverseOut = harvestAlchemicaFromParcel(gotchiverseOut, playerIndex, parcelIndex, durationInBlocks)
+        }
+    }
+    return gotchiverseOut
+}
+
 module.exports = {
+    harvestWithSingleHarvester,
+    harvestAlchemicaFromParcel,
     harvestAlchemica
 }
