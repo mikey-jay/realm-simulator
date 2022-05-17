@@ -18,8 +18,8 @@ test('passTime', (t) => {
     makerInProgress.buildLevel += 1
     makerInProgress.timeComplete = rules.passTimeBlocks
     const humbleParcel = pipe(Parcel.create('humble'),  [Parcel.addAlchemica, token1, rules.installations[reservoirL1.type].capacities[reservoirL1.level - 1]], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, makerInProgress])
-
-    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel])
+    const spaciousParcel = pipe(Parcel.create('spacious'))
+    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addParcel, spaciousParcel])
     
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
 
@@ -28,5 +28,8 @@ test('passTime', (t) => {
     t.equals(result.currentTime, rules.passTimeBlocks, 'current time has advanced')
     t.equals(Player.getTokenBalance(result.players[0], token1) + Wallet.getTokenBalance(result.spillover, token1), Math.min(rules.installations[reservoirL1.type].capacities[reservoirL1.level - 1], rules.installations[harvesterL1.type].harvestRates[harvesterL1.level - 1] * daysPassed), 'player balance plus spillover balance equals lesser of harvest amount or reservoir capacity')
     t.equals(result.players[0].parcels[0].installations[2].level, 2, 'maker has finished upgrading')
+    t.equals(result.currentRound, 1, 'round has been advanced')
+    t.true(result.players[0].parcels[1].tokens[token1] > 0, 'spacious parcel has been surveyed')
+
     t.end()
 })
