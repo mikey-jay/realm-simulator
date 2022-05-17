@@ -4,7 +4,7 @@ const parcelSizes = {
     humble: { width: 8, height: 8 },
     reasonable: { width: 16, height: 16 },
     spacious: { width: 32, height: 64 },
-    paartner: { width: 64, height: 64 }
+    partner: { width: 64, height: 64 }
 }
 
 function create (size) {

@@ -6,7 +6,7 @@ const parcelTypes = [
     { size: 'humble', width: 8, height: 8 },
     { size: 'reasonable', width: 16, height: 16 },
     { size: 'spacious', width: 32, height: 64 },
-    { size: 'paartner', width: 64, height: 64 }
+    { size: 'partner', width: 64, height: 64 }
 ]
 
  
