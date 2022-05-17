@@ -13,7 +13,7 @@ function surveySingleParcel (gotchiverseIn, playerIndex, parcelIndex) {
     return gotchiverseOut
 }
 
-function surveyParcels (gotchiverseIn) {
+function surveyParcelsAndAdvanceRound (gotchiverseIn) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     gotchiverseOut = Gotchiverse.addRound(gotchiverseOut)
     for (let playerIndex = 0 ; playerIndex < gotchiverseOut.players.length ; playerIndex++) {
@@ -26,5 +26,6 @@ function surveyParcels (gotchiverseIn) {
 
 module.exports = {
     surveySingleParcel,
-    surveyParcels
+    surveyParcels: surveyParcelsAndAdvanceRound,
+    surveyParcelsAndAdvanceRound
 }
