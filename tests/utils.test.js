@@ -19,3 +19,10 @@ test('Utils.pipe', (t) => {
     t.equal(Utils.pipe(3, addFive, [subtract, 1]), 3 + 5 - 1, 'pipe works with func passed without params')
     t.end();
 });
+
+test('Utils.getWeightedAverage', (t) => {
+    t.throws(() => Utils.getWeightedAverage([1,2,3],[1,2]), 'throws if weights and dataset are different lengths')
+    t.equals(Utils.getWeightedAverage([1,2,3],[1,1,1]), 2, 'equal weights average is the same as usual')
+    t.equals(Utils.getWeightedAverage([1,1.15,2],[20000,15000,5000]), 47250 / 40000, 'different weights produce weighted average')
+    t.end()
+});
