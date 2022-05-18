@@ -1,10 +1,11 @@
 const Gotchiverse = require("./gotchiverse")
 
 
-function create(rulesetName, harvestFrequencyHrs = 8) {
+function create(rulesetName, harvestFrequencyHrs = 8, endTimeDays = 365 * 3) {
     const rules = require(`../rulesets/${rulesetName}.js`)
     const passTimeBlocks = 60 / rules.secondsPerBlock * 60 * harvestFrequencyHrs
-    return { bots: [], rulesetName, passTimeBlocks, gotchiverse: Gotchiverse.create(rules), results: [] }
+    const endTime = endTimeDays * 24 * 60 * 60 / rules.secondsPerBlock
+    return { bots: [], rulesetName, passTimeBlocks, endTime, gotchiverse: Gotchiverse.create(rules), results: [] }
 }
 
 function addBot(simulationIn, bot) {
