@@ -1,0 +1,25 @@
+const test = require('tape');
+const Installation = require('../entities/installation.js')
+const Simulation = require('../entities/simulation.js')
+const {continueSimulation} = require('../use_cases/continueSimulation.js')
+const {startSimulation} = require('../use_cases/startSimulation.js')
+
+const Parcel = require('../entities/parcel.js')
+const Player = require('../entities/player.js')
+const Bot = require('../entities/bot.js')
+const Gotchiverse = require('../entities/gotchiverse.js')
+const Wallet = require('../entities/wallet.js')
+const { pipe } = require('../utils.js')
+
+test('continueSimulation', (t) => {
+    const burnFudBot = pipe(Bot.create('burnOneFud'), [Bot.addTokens, 'fud', 3], [Bot.addParcel, Parcel.create('partner')])
+    const sim = pipe(Simulation.create('testRules'), [Simulation.addBot, burnFudBot], [Simulation.addBot, burnFudBot], startSimulation, continueSimulation)
+    t.equals(Gotchiverse.getTokenBalance(sim.gotchiverse.players[0], 'fud'), 0, 'All fud has been burned by player 1')
+    t.equals(Gotchiverse.getTokenBalance(sim.gotchiverse.players[1], 'fud'), 0, 'All fud has been burned by player 2')
+    t.equals(sim.results.length, 6, 'there should have been 6 actions taken')
+    t.equals(sim.results[0].blockTime, sim.gotchiverse.currentTime, 'block time matches result')
+    t.equals(sim.results[0].useCaseName, 'burnFud', 'block time matches result')
+    t.equals(sim.results[0].playerTotals.tokens.fud, 2, 'result shows 2 fud after first action')
+    t.equals(sim.results[5].playerTotals.tokens.fud, 0, 'result shows 0 fud after sixth action')
+    t.end()
+})
