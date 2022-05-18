@@ -1,9 +1,10 @@
-const Wallet = require("./wallet")
+const Player = require("./player")
 
-function create (strategy) {
-    return { walletStart: Wallet.create(), strategy, playerIndex: undefined }
+function create (strategyName) {
+    return { ...Player.create(), strategyName }
 }
 
 module.exports = {
+    ...Player,
     create
 }
