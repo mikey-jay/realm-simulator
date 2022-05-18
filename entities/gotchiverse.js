@@ -30,6 +30,7 @@ function addRound (gotchiverseIn) {
 }
 
 module.exports = {
+    ...Wallet,
     create,
     addAlchemica: Wallet.addTokens,
     removeAlchemica: Wallet.removeTokens,
