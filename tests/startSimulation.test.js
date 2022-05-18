@@ -1,13 +1,9 @@
 const test = require('tape');
-const Installation = require('../entities/installation.js')
 const Simulation = require('../entities/simulation.js')
 const {startSimulation} = require('../use_cases/startSimulation.js')
-
 const Parcel = require('../entities/parcel.js')
-const Player = require('../entities/player.js')
 const Bot = require('../entities/bot.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
-const Wallet = require('../entities/wallet.js')
 const { pipe } = require('../utils.js')
 
 test('startSimulation', (t) => {
