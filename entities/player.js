@@ -1,4 +1,6 @@
 const Wallet = require('./wallet.js')
+const Parcel = require('./parcel.js')
+const { addArrays } = require('../utils.js')
 
 function create () {
     return { ...Wallet.create() }
@@ -14,13 +16,13 @@ function getTotalParcels (walletIn) {
 function getTotalInstallations (walletIn) {
     const zeroTotals = [0,0,0,0,0,0,0,0,0]
     let totals = {}
-    for (let p = 0 ; p < walletIn.parcels.length ; p++)
-        for (i of walletIn.parcels[p].installations) {
-            if (i.level > 0) {
-                if (typeof totals[i.type] == 'undefined') totals[i.type] = [...zeroTotals]
-                totals[i.type][i.level - 1]++
-            }
+    for (playerParcel of walletIn.parcels) {
+        let parcelTotals = Parcel.getTotalInstallations(playerParcel)
+        for (let type in parcelTotals) {
+            if (typeof totals[type] == 'undefined') totals[type] = [...zeroTotals]
+            totals[type] = addArrays(totals[type], parcelTotals[type])      
         }
+    }
     return totals;
 }
 

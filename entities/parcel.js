@@ -62,6 +62,18 @@ function getCurrentUpgradeCount (parcelIn) {
     return parcelIn.installations.filter((i) => i.buildLevel != i.level && i.buildLevel > 1).length
 }
 
+function getTotalInstallations (parcelIn) {
+    const zeroTotals = [0,0,0,0,0,0,0,0,0]
+    let totals = {}
+    for (i of parcelIn.installations) {
+        if (i.level > 0) {
+            if (typeof totals[i.type] == 'undefined') totals[i.type] = [...zeroTotals]
+            totals[i.type][i.level - 1]++
+        }
+    }
+    return totals;
+}
+
 module.exports = {
     ...Wallet,
     create,
@@ -74,5 +86,6 @@ module.exports = {
     getInstallationsOfType,
     getInstallationTypeIndexes,
     getInstallationClassIndexes,
-    getCurrentUpgradeCount
+    getCurrentUpgradeCount,
+    getTotalInstallations
 }
