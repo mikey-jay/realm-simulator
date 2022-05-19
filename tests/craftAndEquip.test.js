@@ -1,6 +1,6 @@
 const test = require('tape');
-const { craftAndEquipInstallation } = require('../use_cases/craftAndEquip.js')
-const Installation = require('../entities/installation.js')
+const { craftAndEquipInstallation, craftAndEquipFudHarvester } = require('../use_cases/craftAndEquip.js')
+const Harvester = require('../entities/harvester.js')
 const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
@@ -103,6 +103,20 @@ test('craftAndEquipInstallation - installation prerequisites', (t) => {
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
     t.throws(() => craftAndEquipInstallation(verse, 0, 0, type), 'cannot craft installation before prerequisite')
     t.doesNotThrow(() => pipe(verse, [craftAndEquipInstallation, 0, 0, prereqType], [craftAndEquipInstallation, 0, 0, type]), 'does not throw if prereq is installed first')
+    
+    t.end();
+});
+
+test.only('craftAndEquipInstallation - max quantities per class', (t) => {
+    const rules = require('../rulesets/testRules.js')
+
+    rules.maxQuantityPerInstallationClass['harvester'].humble = 1
+    rules.installations['harvester_fud'].prerequisites = []
+
+    const humbleParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, Harvester.create('fomo')])
+    let qualifiedPlayer = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations['harvester_fud'].buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
+    t.throws(() => craftAndEquipFudHarvester(verse, 0, 0), 'cannot craft more than max for this class')
     
     t.end();
 });

@@ -12,11 +12,17 @@ function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, ins
     let installation = (typeof installationTypeOrFactory == 'function') ? installationTypeOrFactory(...factoryArgs) : Installation.create(installationTypeOrFactory)
     let parcelSize = gotchiverseOut.players[playerIndex].parcels[parcelIndex].size
     let maxInstallationsAllowed = gotchiverseOut.rules.installations[installation.type].maxQuantityPerParcel[parcelSize]
+    let maxClassInstallationsAllowedPerParcelSize = gotchiverseOut.rules.maxQuantityPerInstallationClass[installation.class]
+    let maxClassInstallationsAllowed = (typeof maxClassInstallationsAllowedPerParcelSize != 'undefined') ? maxClassInstallationsAllowedPerParcelSize[parcelSize] : undefined
+
     const prerequisites = gotchiverseOut.rules.installations[installation.type].prerequisites
 
     if ((typeof maxInstallationsAllowed != 'undefined') && Parcel.getInstallationTypeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], installation.type) >= maxInstallationsAllowed)
         throw new Error (`maximum installations of type ${installation.type} has been reached for this parcel`)
-    
+
+    if ((typeof maxClassInstallationsAllowed != 'undefined') && Parcel.getInstallationClassCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], installation.class) >= maxClassInstallationsAllowed)
+        throw new Error (`maximum installations of class ${installation.class} has been reached for this parcel`)
+        
     prerequisites.forEach((type) => {
         if (Parcel.getInstallationTypeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], type) < 1)
             throw new Error (`parcel is missing prerequisite installation type ${type}`)
@@ -39,9 +45,14 @@ function craftAndEquipReservoir(gotchiverseIn, playerIndex, parcelIndex, resourc
     return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Reservoir.create, resourceToken)
 }
 
-function craftAndEquipHarvester(gotchiverseIn, playerIndex, parcelIndex) {
+function craftAndEquipHarvester(gotchiverseIn, playerIndex, parcelIndex, resourceToken) {
     return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Harvester.create, resourceToken)
 }
+
+const craftAndEquipFudHarvester = (...args) => craftAndEquipHarvester (...args, 'fud')
+const craftAndEquipFomoHarvester = (...args) => craftAndEquipHarvester (...args, 'fomo')
+const craftAndEquipAlphaHarvester = (...args) => craftAndEquipHarvester (...args, 'alpha')
+const craftAndEquipKekHarvester = (...args) => craftAndEquipHarvester (...args, 'kek')
 
 function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
     return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
@@ -52,5 +63,9 @@ module.exports = {
     craftAndEquipAltar,
     craftAndEquipReservoir,
     craftAndEquipHarvester,
-    craftAndEquipMaker
+    craftAndEquipMaker,
+    craftAndEquipFudHarvester,
+    craftAndEquipFomoHarvester,
+    craftAndEquipAlphaHarvester,
+    craftAndEquipKekHarvester
 }

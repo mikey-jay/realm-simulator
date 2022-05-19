@@ -117,5 +117,13 @@ module.exports = {
         harvester_alpha: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_alpha'},
         harvester_kek: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_kek'},
         maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
-    }
+    },
+    maxQuantityPerInstallationClass: {
+        harvester: {
+            humble: 4,
+            reasonable: 16,
+            spacious: 128,
+            partner: 256
+        }
+    },
 }
