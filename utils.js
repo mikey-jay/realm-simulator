@@ -19,12 +19,12 @@ function getWeightedAverage(dataset, weights) {
 }
 
 function addArrays(...arrs) {
-    let arr1 = [...arrs[0]]
-    let arr2 = [...arrs[1]]
+    let arr1 = Array.isArray(arrs[0]) ? [...arrs[0]] : []
+    let arr2 = Array.isArray(arrs[1]) ? [...arrs[1]] : []
     const longestLength = Math.max(arr1.length, arr2.length)
     const padZeroes = (arr, desiredLength) => { 
         const arrOut = [...arr]
-        if (arrOut.length < desiredLength) { arrOut.push(0) }
+        while (arrOut.length < desiredLength) { arrOut.push(0) }
         return arrOut
     }
     const arr1Padded = padZeroes(arr1, longestLength)

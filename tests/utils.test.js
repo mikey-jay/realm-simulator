@@ -29,6 +29,8 @@ test('Utils.getWeightedAverage', (t) => {
 
 test('Utils.addArrays', (t) => {
     t.deepEquals(Utils.addArrays([1],[3]), [4], 'single element returns single element with elements added')
+    t.deepEquals(Utils.addArrays([1, 2, 3], undefined), [1, 2, 3], 'if one of the elements is not an array, considers it to be an empty array or zeroes')
+    t.deepEquals(Utils.addArrays([1, 2, 3], []), [1, 2, 3], 'if one of the elements is an empty array, considers it to be an empty array or zeroes')
     t.deepEquals(Utils.addArrays([1,2],[3,4]), [4,6], 'single element returns single element with elements added')
     t.equals(Utils.addArrays([1,2],[3,4,5]).length, 3, 'arrays of different length return array of longest length with missing element being zero')
     t.deepEquals(Utils.addArrays([1,2],[3,4,5]), [4,6,5], 'arrays of different length return array of longest length with elements added')
