@@ -37,7 +37,7 @@ function getTotalReservoirSpilloverRateFromParcel (gotchiverseIn, playerIndex, p
     return getWeightedAverage(spilloverRates, totalReservoirCapacityByLevel)
 }
 
-function emptyReservoirs(gotchiverseIn) {
+function emptyAllReservoirs(gotchiverseIn) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     for (let playerIndex = 0 ; playerIndex < gotchiverseOut.players.length ; playerIndex++) {
         for (let parcelIndex = 0 ; parcelIndex < gotchiverseOut.players[playerIndex].parcels.length ; parcelIndex++) {
@@ -48,6 +48,6 @@ function emptyReservoirs(gotchiverseIn) {
 }
 
 module.exports = {
-    emptyReservoirs,
+    emptyAllReservoirs,
     emptyParcelReservoirs
 }

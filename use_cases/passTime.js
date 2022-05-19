@@ -11,7 +11,7 @@ function passTime(gotchiverseIn, passTimeBlocks = 0) {
     gotchiverseOut.currentTime += passTimeBlocks
     if (gotchiverseOut.currentRound < gotchiverseOut.rules.surveyingRoundStartTimes.filter((time) => time <= gotchiverseOut.currentTime).length)
         gotchiverseOut = surveyParcelsAndAdvanceRound(gotchiverseOut)
-    gotchiverseOut = pipe(gotchiverseOut, [harvestAlchemica, passTimeBlocks], emptyReservoirs, levelUpAllCompletedUpgrades)
+    gotchiverseOut = pipe(gotchiverseOut, [harvestAlchemica, passTimeBlocks], levelUpAllCompletedUpgrades)
     return gotchiverseOut
 }
 

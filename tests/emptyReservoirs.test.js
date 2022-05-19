@@ -1,5 +1,5 @@
 const test = require('tape');
-const { emptyReservoirs, emptyParcelReservoirs } = require('../use_cases/emptyReservoirs.js')
+const { emptyAllReservoirs, emptyParcelReservoirs } = require('../use_cases/emptyReservoirs.js')
 const { pipe } = require('../utils.js')
 const Reservoir = require('../entities/reservoir.js')
 const Parcel = require('../entities/parcel.js')
@@ -34,7 +34,7 @@ test('emptyReservoirs, emptyParcelReservoirs', (t) => {
     t.equals(Wallet.getTokenBalance(result.spillover, token1), reservoirBalance * totalSpilloverRate, 'spillover wallet has spillover')
     t.equals(Player.getTokenBalance(result.players[0], token2), reservoirBalance * (1 - spilloverRateL1), 'player has reservoir (second type) balance less spillover')
     
-    const result2 = emptyReservoirs(verse)
+    const result2 = emptyAllReservoirs(verse)
     t.equals(Reservoir.getBalance(result2.players[0].parcels[1].installations[0]), 0, 'second parcel reservoir is empty')
     t.equals(Reservoir.getBalance(result2.players[1].parcels[0].installations[0]), 0, 'second player reservoir is empty')
 
