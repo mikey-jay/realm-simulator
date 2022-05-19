@@ -1,5 +1,5 @@
 function create(type, installationClass, timeComplete = 0) {
-    return { type, class: (installationClass || type), timeComplete, level: 0, buildLevel: 0 }
+    return { type, class: (installationClass || type), timeComplete, level: 0, buildLevel: 0, width: 2, height: 2 }
 }
 
 function addLevel (installationIn) {
