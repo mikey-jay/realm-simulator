@@ -20,12 +20,19 @@ function create (size) {
 
 function addInstallation (parcelIn, installation) {
     let parcelOut = structuredClone(parcelIn)
-    if (installation.width > parcelOut.width || installation.height > parcelOut.height) throw new Error('installation is too large to fit on parcel')
-    const getInstallationArea = (i) => i.width * i.height
-    const usedSpace = parcelOut.installations.reduce((total, i) => total + getInstallationArea(i), 0)
-    const freeSpace = parcelOut.width * parcelOut.height - usedSpace
-    if (freeSpace < getInstallationArea(installation)) throw new Error('not enough space on parcel')
+    if (!hasSpaceForInstallation(parcelOut, installation)) throw new Error('not enough space on parcel')
     return Wallet.addInstallation(parcelOut, installation)
+}
+
+function getFreeSpace (parcelIn) {
+    const getInstallationArea = (i) => i.width * i.height    
+    const usedSpace = parcelIn.installations.reduce((total, i) => total + getInstallationArea(i), 0)
+    return parcelIn.width * parcelIn.height - usedSpace    
+}
+
+function hasSpaceForInstallation (parcelIn, installation) {
+    if (installation.width > parcelIn.width || installation.height > parcelIn.height) return false
+    return getFreeSpace(parcelIn) >= installation.width * installation.height
 }
 
 function getInstallationTypeCount (parcelIn, installationType) {
@@ -97,5 +104,7 @@ module.exports = {
     getInstallationTypeIndexes,
     getInstallationClassIndexes,
     getCurrentUpgradeCount,
-    getTotalInstallations
+    getTotalInstallations,
+    getFreeSpace,
+    hasSpaceForInstallation
 }
