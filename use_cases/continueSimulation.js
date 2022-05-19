@@ -7,12 +7,12 @@ const { emptyParcelReservoirs } = require('./emptyReservoirs.js')
 function continueSimulation(simulationIn) {
     let simulationOut = structuredClone(simulationIn)
     for (let bi = 0 ; bi < simulationOut.bots.length ; bi++) {
-        const strategyFactory = require(`../strategies/${simulationOut.bots[bi].strategyName}`)
+        const useCaseFactory = require(`../strategies/${simulationOut.bots[bi].strategyName}`)
         for (let pi = 0 ; pi < simulationOut.gotchiverse.players[bi].parcels.length ; pi++) {
-            let strategy = emptyParcelReservoirs
-            while (typeof strategy == 'function') {
-                simulationOut = playStrategy(simulationOut, strategy, bi, pi)
-                strategy = strategyFactory(simulationOut.gotchiverse, bi, pi)
+            let useCase = emptyParcelReservoirs
+            while (typeof useCase == 'function') {
+                simulationOut = runUseCase(simulationOut, useCase, bi, pi)
+                useCase = useCaseFactory(simulationOut.gotchiverse, bi, pi)
             } 
         }
     }
@@ -21,10 +21,11 @@ function continueSimulation(simulationIn) {
     return simulationOut
 }
 
-function playStrategy(simulationIn, strategy, playerIndex, parcelIndex) {
+function runUseCase(simulationIn, useCase, playerIndex, parcelIndex) {
     let simulationOut = structuredClone(simulationIn)
-    simulationOut.gotchiverse = strategy(simulationOut.gotchiverse, playerIndex, parcelIndex)
-    const afterStrategyResult = Result.create(simulationOut.gotchiverse, playerIndex, parcelIndex, strategy.name)
+    const beforeStrategyResult = Result.create(simulationIn.gotchiverse, playerIndex, parcelIndex)
+    simulationOut.gotchiverse = useCase(simulationOut.gotchiverse, playerIndex, parcelIndex)
+    const afterStrategyResult = Result.create(simulationOut.gotchiverse, playerIndex, parcelIndex, useCase.name, beforeStrategyResult)
     simulationOut = Simulation.addResult(simulationOut, afterStrategyResult)
     return simulationOut
 }

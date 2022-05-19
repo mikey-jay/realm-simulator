@@ -15,6 +15,7 @@ test('continueSimulation', (t) => {
     t.equals(sim.results.filter((r) => r.useCaseName == 'burnFud').length, 6, 'there should have been 6 actions taken')
     t.equals(sim.results[0].blockTime, sim.passTimeBlocks, 'block time matches result')
     t.equals(sim.results.filter((r) => r.useCaseName == 'burnFud')[0].playerTotals.tokens.fud, 2, 'result shows 2 fud after first action')
+    t.equals(sim.results.filter((r) => r.useCaseName == 'burnFud')[0].playerChange.tokens.fud, -1, 'result shows -1 fud change after first action')
     t.equals(sim.results.filter((r) => r.useCaseName == 'burnFud')[5].playerTotals.tokens.fud, 0, 'result shows 0 fud after sixth action')
     t.end()
 })
