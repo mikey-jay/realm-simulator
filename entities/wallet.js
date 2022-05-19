@@ -1,5 +1,14 @@
+const { subtractObjectKeys } = require("../utils")
+
 function create () {
     return { tokens: {}, parcels: [], installations: [] }
+}
+
+function hasSufficientTokens (walletIn, tokens) {
+    const difference = subtractObjectKeys(walletIn.tokens, tokens)
+    for (let t in tokens)
+        if (difference[t] < 0) return false
+    return true
 }
 
 function addSingleToken (walletIn, token, qty) {
@@ -68,5 +77,6 @@ module.exports = {
     removeInstallation,
     addParcel,
     removeParcel,
-    getTokenBalance
+    getTokenBalance,
+    hasSufficientTokens
 }
