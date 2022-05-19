@@ -19,6 +19,11 @@ test('Result.create', (t) => {
     t.equals(result.parcelTotals.tokens.fud, 100, 'fud shown in parcel total')
     t.equals(result.playerTotals.installations.altar[0], 2, 'player has 2 L1 altars')
     t.deepEquals(result.playerTotals.installations.altar, addArrays(result.parcelTotals.installations.altar, result.parcelTotals.installations.altar), 'Player installation sum is equal to parcel installation sums')
+    t.deepEquals(result.playerTotals, result.playerChange, 'if not prior result for playerTotals - assume zero')
+    t.deepEquals(result.parcelTotals, result.parcelChange, 'if not prior result for parcelTotals - assume zero')
+    verse.players[0] = Player.addTokens(verse.players[0], 'fud', 50)
+    const result2 = Result.create(verse, 0, 0, 'a_use_case', result)
+    t.equals(result2.playerChange.tokens.fud, 50, 'playerChange shows difference in tokens')
     t.end()
 })
 
