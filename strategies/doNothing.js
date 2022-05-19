@@ -1,3 +1,3 @@
-module.exports = function doNothing (verseIn) {
-    return verseOut
+module.exports = function doNothing () {
+    return false
 }
