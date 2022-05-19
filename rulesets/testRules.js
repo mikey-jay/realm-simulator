@@ -18,8 +18,6 @@ const installationTemplate = {
         'spacious': 1,
         'partner': 1
     },
-    width: 1,
-    height: 1,
     prerequisites: [],
     levelPrerequisite: undefined
 }

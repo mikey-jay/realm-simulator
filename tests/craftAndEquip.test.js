@@ -29,8 +29,6 @@ test('craftAndEquipInstallation', (t) => {
         let verse = craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rules), qualifiedPlayer), 0, 0, type)
         t.equals(verse.players[0].parcels[0].installations.length, 1, 'there is one installation')
         t.equals(verse.players[0].parcels[0].installations[0].type, type, `there is an installation of type ${type}`)
-        t.equals(verse.players[0].parcels[0].installations[0].width, rules.installations[type].width, 'has width matching rules')
-        t.equals(verse.players[0].parcels[0].installations[0].height, rules.installations[type].height, 'has height matching rules')
         t.deepEqual(verse.players[0].tokens, zeroTokens)
         t.throws(() => craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rules), noParcelsPlayer), 0, 0, type), 'throws if player does not have a parcel')
         t.throws(() => craftAndEquipInstallation(Gotchiverse.addPlayer(Gotchiverse.create(rules), noMoneyPlayer), 0, 0, type), 'throws if player does not have enough funds')
@@ -107,7 +105,7 @@ test('craftAndEquipInstallation - installation prerequisites', (t) => {
     t.end();
 });
 
-test.only('craftAndEquipInstallation - max quantities per class', (t) => {
+test('craftAndEquipInstallation - max quantities per class', (t) => {
     const rules = require('../rulesets/testRules.js')
 
     rules.maxQuantityPerInstallationClass['harvester'].humble = 1
