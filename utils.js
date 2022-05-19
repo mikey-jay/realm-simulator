@@ -36,9 +36,20 @@ function addArrays(...arrs) {
 function addObjectKeys (obj1, obj2, subtract = false) {
     let objOut = {...obj1, ...obj2}
     for (let key in objOut) {
-        val1 = Object.keys(obj1).includes(key) ? obj1[key] : 0
-        val2 = Object.keys(obj2).includes(key) ? obj2[key] : 0
-        objOut[key] = subtract ? val1 - val2 : val1 + val2
+        const treatAsArray = Array.isArray(obj1[key]) || Array.isArray(obj2[key])
+        const treatAsObject = !treatAsArray && ((typeof obj1[key] == 'object') || (typeof obj2[key] == 'object'))
+        const defaultValue = treatAsArray ? [] : treatAsObject ? {} : 0
+        val1 = Object.keys(obj1).includes(key) ? obj1[key] : defaultValue
+        val2 = Object.keys(obj2).includes(key) ? obj2[key] : defaultValue
+        if (treatAsArray) {
+            objOut[key] = subtract ? addArrays(val1, val2.map((v) => v * -1)) : addArrays(val1, val2)
+        }
+        else if (treatAsObject) {
+            objOut[key] = addObjectKeys(val1, val2, subtract)
+        }
+        else {
+            objOut[key] = subtract ? val1 - val2 : val1 + val2
+        }
     }
     return objOut
 }

@@ -40,6 +40,8 @@ test('Utils.addArrays', (t) => {
 test('Utils.addObjectKeys', (t) => {
     t.deepEquals(Utils.addObjectKeys({'a': 1},{'a': 2}), {'a': 3}, 'single key returns sum of the two objects')
     t.deepEquals(Utils.addObjectKeys({'a': 1},{'b': 2}), {'a': 1, 'b': 2}, 'different keys returns sum of the two objects')
+    t.deepEquals(Utils.addObjectKeys({'a': [1,2]},{'a': [3,4]}), {'a': [4,6] }, 'if values are arrays, add the arrays')
+    t.deepEquals(Utils.addObjectKeys({'a': {'a': 7 }, 'b': 1 },{'a': {'a': 5, 'b': 1 }, 'b': 2, 'c': {'a': 2} }), {'a': {'a': 12, 'b': 1 }, 'b': 3, 'c': {'a': 2} }, 'different keys and subkeys returns subtraction of the two objects')
     t.end()
 })
 
