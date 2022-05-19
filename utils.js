@@ -33,8 +33,24 @@ function addArrays(...arrs) {
     return arrs.length > 2 ? addArrays(sumOfArrays, ...[...arrs].splice(2)) : sumOfArrays
 }
 
+function addObjectKeys (obj1, obj2, subtract = false) {
+    let objOut = {...obj1, ...obj2}
+    for (let key in objOut) {
+        val1 = Object.keys(obj1).includes(key) ? obj1[key] : 0
+        val2 = Object.keys(obj2).includes(key) ? obj2[key] : 0
+        objOut[key] = subtract ? val1 - val2 : val1 + val2
+    }
+    return objOut
+}
+
+function subtractObjectKeys (fromObj, subtractObj) {
+    return addObjectKeys(fromObj, subtractObj, true)
+}
+
 module.exports = {
     pipe,
     getWeightedAverage,
-    addArrays
+    addArrays,
+    addObjectKeys,
+    subtractObjectKeys
 }

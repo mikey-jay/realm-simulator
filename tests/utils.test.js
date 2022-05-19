@@ -36,3 +36,9 @@ test('Utils.addArrays', (t) => {
     t.deepEquals(Utils.addArrays([1,2],[6,7],[3,4,5]), [10,13,5], 'changing the order gives the same result')
     t.end()
 })
+
+test('Utils.addObjectKeys', (t) => {
+    t.deepEquals(Utils.addObjectKeys({'a': 1},{'a': 2}), {'a': 3}, 'single key returns sum of the two objects')
+    t.deepEquals(Utils.addObjectKeys({'a': 1},{'b': 2}), {'a': 1, 'b': 2}, 'different keys returns sum of the two objects')
+    t.end()
+})
