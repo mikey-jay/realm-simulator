@@ -48,9 +48,10 @@ test('upgradeInstallation', (t) => {
 
     // upgrades limited by another installation's level
     verse.players[0] = structuredClone(qualifiedPlayer)
-    verse.players[0].parcels[0] = Parcel.addInstallation(verse.players[0].parcels[0], 'harvester')
+    verse.players[0].parcels[0] = Parcel.addInstallation(verse.players[0].parcels[0], Harvester.create('fud'))
     verse.players[0].parcels[0].installations[1].level = startingLevel
     verse.players[0].parcels[0].installations[1].buildLevel = startingLevel
+    verse.rules.installations.harvester_fud.levelPrerequisite = 'altar'
     t.throws(() => craftUpgrade(verse, 0, 0, 1), 'upgrading not allowed if level is limited by another installation\'s level')
 
     t.end()

@@ -5,31 +5,21 @@ const Maker = require('../entities/installation.js')
 const Altar = require('../entities/installation.js')
 const Parcel = require('../entities/parcel.js')
 const { craftUpgrade } = require('./craftUpgrade.js')
-const { spendOnCrafting } = require('./spendOnCrafting.js')
 
 function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, installationTypeOrFactory, ...factoryArgs) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     let installation = (typeof installationTypeOrFactory == 'function') ? installationTypeOrFactory(...factoryArgs) : Installation.create(installationTypeOrFactory)
-    let parcelSize = gotchiverseOut.players[playerIndex].parcels[parcelIndex].size
-    let maxInstallationsAllowed = gotchiverseOut.rules.installations[installation.type].maxQuantityPerParcel[parcelSize]
-    let maxClassInstallationsAllowedPerParcelSize = gotchiverseOut.rules.maxQuantityPerInstallationClass[installation.class]
-    let maxClassInstallationsAllowed = (typeof maxClassInstallationsAllowedPerParcelSize != 'undefined') ? maxClassInstallationsAllowedPerParcelSize[parcelSize] : undefined
 
-    const prerequisites = gotchiverseOut.rules.installations[installation.type].prerequisites
-
-    if ((typeof maxInstallationsAllowed != 'undefined') && Parcel.getInstallationTypeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], installation.type) >= maxInstallationsAllowed)
+    if (hasReachedMaxOfType(gotchiverseOut, playerIndex, parcelIndex, installation.type))
         throw new Error (`maximum installations of type ${installation.type} has been reached for this parcel`)
 
-    if ((typeof maxClassInstallationsAllowed != 'undefined') && Parcel.getInstallationClassCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], installation.class) >= maxClassInstallationsAllowed)
+    if (hasReachedMaxOfClass(gotchiverseOut, playerIndex, parcelIndex, installation.class))
         throw new Error (`maximum installations of class ${installation.class} has been reached for this parcel`)
-        
-    prerequisites.forEach((type) => {
-        if (Parcel.getInstallationTypeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], type) < 1)
-            throw new Error (`parcel is missing prerequisite installation type ${type}`)
-    })
+    
+    const missingPrerequisiteTypes = getMissingPrerequisiteTypes(gotchiverseOut, playerIndex, parcelIndex, installation.type)
 
-    installation.width = gotchiverseOut.rules.installations[installation.type].width
-    installation.height = gotchiverseOut.rules.installations[installation.type].height
+    if (missingPrerequisiteTypes.length > 0)
+        throw new Error (`parcel is missing prerequisite installation types: ${missingPrerequisiteTypes.join(',')}`)
 
     gotchiverseOut.players[playerIndex].parcels[parcelIndex] = Parcel.addInstallation(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installation)
 
@@ -55,7 +45,27 @@ const craftAndEquipAlphaHarvester = (...args) => craftAndEquipHarvester (...args
 const craftAndEquipKekHarvester = (...args) => craftAndEquipHarvester (...args, 'kek')
 
 function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Maker.create)
+}
+
+function hasReachedMaxOfType (gotchiverseIn, playerIndex, parcelIndex, installationType) {
+    let parcelSize = gotchiverseIn.players[playerIndex].parcels[parcelIndex].size
+    let maxInstallationsAllowed = gotchiverseIn.rules.installations[installationType].maxQuantityPerParcel[parcelSize]
+
+    return ((typeof maxInstallationsAllowed != 'undefined') && Parcel.getInstallationTypeCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installationType) >= maxInstallationsAllowed)
+}
+
+function hasReachedMaxOfClass (gotchiverseIn, playerIndex, parcelIndex, installationClass) {
+    let parcelSize = gotchiverseIn.players[playerIndex].parcels[parcelIndex].size
+    let maxClassInstallationsAllowedPerParcelSize = gotchiverseIn.rules.maxQuantityPerInstallationClass[installationClass]
+    let maxClassInstallationsAllowed = (typeof maxClassInstallationsAllowedPerParcelSize != 'undefined') ? maxClassInstallationsAllowedPerParcelSize[parcelSize] : undefined
+
+    return ((typeof maxClassInstallationsAllowed != 'undefined') && Parcel.getInstallationClassCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installationClass) >= maxClassInstallationsAllowed)
+}
+
+function getMissingPrerequisiteTypes (gotchiverseIn, playerIndex, parcelIndex, installationType) {
+    const prerequisites = gotchiverseIn.rules.installations[installationType].prerequisites
+    return prerequisites.filter((type) => Parcel.getInstallationTypeCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex], type) < 1)
 }
 
 module.exports = {
@@ -67,5 +77,8 @@ module.exports = {
     craftAndEquipFudHarvester,
     craftAndEquipFomoHarvester,
     craftAndEquipAlphaHarvester,
-    craftAndEquipKekHarvester
+    craftAndEquipKekHarvester,
+    hasReachedMaxOfClass,
+    hasReachedMaxOfType,
+    getMissingPrerequisiteTypes
 }
