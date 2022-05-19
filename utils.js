@@ -18,7 +18,23 @@ function getWeightedAverage(dataset, weights) {
     return sumArray(weightedDataset) / sumArray(weights)
 }
 
+function addArrays(...arrs) {
+    let arr1 = [...arrs[0]]
+    let arr2 = [...arrs[1]]
+    const longestLength = Math.max(arr1.length, arr2.length)
+    const padZeroes = (arr, desiredLength) => { 
+        const arrOut = [...arr]
+        if (arrOut.length < desiredLength) { arrOut.push(0) }
+        return arrOut
+    }
+    const arr1Padded = padZeroes(arr1, longestLength)
+    const arr2Padded = padZeroes(arr2, longestLength)
+    const sumOfArrays = arr1Padded.map((val, i) => val + arr2Padded[i])
+    return arrs.length > 2 ? addArrays(sumOfArrays, ...[...arrs].splice(2)) : sumOfArrays
+}
+
 module.exports = {
     pipe,
-    getWeightedAverage
+    getWeightedAverage,
+    addArrays
 }

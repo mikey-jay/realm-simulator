@@ -26,3 +26,13 @@ test('Utils.getWeightedAverage', (t) => {
     t.equals(Utils.getWeightedAverage([1,1.15,2],[20000,15000,5000]), 47250 / 40000, 'different weights produce weighted average')
     t.end()
 });
+
+test('Utils.addArrays', (t) => {
+    t.deepEquals(Utils.addArrays([1],[3]), [4], 'single element returns single element with elements added')
+    t.deepEquals(Utils.addArrays([1,2],[3,4]), [4,6], 'single element returns single element with elements added')
+    t.equals(Utils.addArrays([1,2],[3,4,5]).length, 3, 'arrays of different length return array of longest length with missing element being zero')
+    t.deepEquals(Utils.addArrays([1,2],[3,4,5]), [4,6,5], 'arrays of different length return array of longest length with elements added')
+    t.deepEquals(Utils.addArrays([1,2],[3,4,5],[6,7]), [10,13,5], 'add 3 arrays returns the sum of all 3')
+    t.deepEquals(Utils.addArrays([1,2],[6,7],[3,4,5]), [10,13,5], 'changing the order gives the same result')
+    t.end()
+})
