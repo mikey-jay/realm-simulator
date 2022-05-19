@@ -32,6 +32,10 @@ function getInstallationTypeCount (parcelIn, installationType) {
     return getInstallationsOfType(parcelIn, installationType).length
 }
 
+function getInstallationClassCount (parcelIn, installationType) {
+    return getInstallationsOfClass(parcelIn, installationType).length
+}
+
 function getInstallationPropertyIndexes (parcelIn, property, value) {
     let indexes = []
     for (let i = 0 ; i < parcelIn.installations.length ; i++) {
@@ -50,6 +54,10 @@ function getInstallationClassIndexes (parcelIn, installationClass) {
 
 function getInstallationsOfType (parcelIn, installationType) {
     return parcelIn.installations.filter((i) => i.type == installationType)
+}
+
+function getInstallationsOfClass (parcelIn, installationType) {
+    return parcelIn.installations.filter((i) => i.class == installationType)
 }
 
 function getInstallationLevelCount (parcelIn, installationType) {
@@ -82,8 +90,10 @@ module.exports = {
     addInstallation,
     removeInstallation: Wallet.removeInstallation,
     getInstallationTypeCount,
+    getInstallationClassCount,
     getInstallationLevelCount,
     getInstallationsOfType,
+    getInstallationsOfClass,
     getInstallationTypeIndexes,
     getInstallationClassIndexes,
     getCurrentUpgradeCount,
