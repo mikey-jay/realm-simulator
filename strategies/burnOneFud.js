@@ -1,5 +1,4 @@
 const Player = require('../entities/player.js')
-const Result = require('../entities/player.js')
 
 module.exports = function burnOneFud (verseIn, playerIndex, parcelIndex) {
     if (Player.getTokenBalance(verseIn.players[playerIndex], 'fud') >= 1)
