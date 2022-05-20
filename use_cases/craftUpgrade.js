@@ -41,6 +41,22 @@ function levelUpIfUpgradeComplete(gotchiverseIn, playerIndex, parcelIndex, insta
     return gotchiverseOut
 }
 
+function upgradeLowestLevelInstallationOfType(gotchiverseIn, playerIndex, parcelIndex, installationType) {
+    const playerParcel = gotchiverseIn.players[playerIndex].parcels[parcelIndex]
+    return craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, Parcel.getIndexOfLowestLevelInstallation(playerParcel, installationType))
+}
+
+const upgradeLowestLevelFudHarvester = (...args) => upgradeLowestLevelInstallationOfType(...args, 'harvester_fud')
+const upgradeLowestLevelFomoHarvester = (...args) => upgradeLowestLevelInstallationOfType(...args, 'harvester_fomo')
+const upgradeLowestLevelAlphaHarvester = (...args) => upgradeLowestLevelInstallationOfType(...args, 'harvester_alpha')
+const upgradeLowestLevelKekHarvester = (...args) => upgradeLowestLevelInstallationOfType(...args, 'harvester_kek')
+const upgradeLowestLevelFudReservoir = (...args) => upgradeLowestLevelInstallationOfType(...args, 'reservoir_fud')
+const upgradeLowestLevelFomoReservoir = (...args) => upgradeLowestLevelInstallationOfType(...args, 'reservoir_fomo')
+const upgradeLowestLevelAlphaReservoir = (...args) => upgradeLowestLevelInstallationOfType(...args, 'reservoir_alpha')
+const upgradeLowestLevelKekReservoir = (...args) => upgradeLowestLevelInstallationOfType(...args, 'reservoir_kek')
+const upgradeLowestLevelMaker = (...args) => upgradeLowestLevelInstallationOfType(...args, 'maker')
+const upgradeLowestLevelAltar = (...args) => upgradeLowestLevelInstallationOfType(...args, 'altar')
+
 function levelUpAllCompletedUpgrades(gotchiverseIn) {
     let gotchiverseOut = structuredClone(gotchiverseIn)
     for (let playerIndex = 0 ; playerIndex < gotchiverseOut.players.length ; playerIndex++) {
@@ -56,5 +72,16 @@ function levelUpAllCompletedUpgrades(gotchiverseIn) {
 module.exports = {
    craftUpgrade,
    levelUpIfUpgradeComplete,
-   levelUpAllCompletedUpgrades
+   levelUpAllCompletedUpgrades,
+   upgradeLowestLevelInstallationOfType,
+   upgradeLowestLevelFudHarvester,
+   upgradeLowestLevelFomoHarvester,
+   upgradeLowestLevelAlphaHarvester,
+   upgradeLowestLevelKekHarvester,
+   upgradeLowestLevelFudReservoir,
+   upgradeLowestLevelFomoReservoir,
+   upgradeLowestLevelAlphaReservoir,
+   upgradeLowestLevelKekReservoir,
+   upgradeLowestLevelAltar,
+   upgradeLowestLevelMaker
 }

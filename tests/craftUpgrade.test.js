@@ -1,5 +1,5 @@
 const test = require('tape');
-const { craftUpgrade } = require('../use_cases/craftUpgrade.js')
+const { craftUpgrade, upgradeLowestLevelInstallationOfType } = require('../use_cases/craftUpgrade.js')
 const { pipe } = require('../utils.js')
 const Installation = require('../entities/installation.js')
 const Harvester = require('../entities/harvester.js')
@@ -82,3 +82,32 @@ test('upgradeInstallation - concurrent upgrade limits', (t) => {
 
     t.end()
 });
+
+test('upgradeLowestLevelOfInstallationType', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    const harvesterUpgradeCosts = rules.installations['reservoir_fud'].buildCosts[2]
+
+    // take prerequisite rules out of the picture
+    rules.installations['harvester_fud'].prerequisites = []
+    rules.installations['harvester_fud'].levelPrerequisite = undefined
+    rules.maxConcurrentUpgrades = 1
+
+    let h1 = Harvester.create('fud')
+    h1.level = 3
+    h1.buildLevel = 3
+
+    let h2 = Harvester.create('fud')
+    h2.level = 2
+    h2.buildLevel = 2
+
+    let h3 = Harvester.create('fomo')
+    h3.level = 1
+    h3.buildLevel = 1
+
+    let playerParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, h1], [Parcel.addInstallation, h2], [Parcel.addInstallation, h3])
+    let qualifiedPlayer = pipe(Player.create(), [Player.addTokens, harvesterUpgradeCosts], [Player.addParcel, playerParcel])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
+    let result = upgradeLowestLevelInstallationOfType(verse, 0, 0, 'harvester_fud')
+    t.deepEquals([3,3,1], result.players[0].parcels[0].installations.map((i) => i.buildLevel), 'build level of lowest level has increased')
+    t.end()
+})
