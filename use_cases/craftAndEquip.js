@@ -44,6 +44,11 @@ const craftAndEquipFomoHarvester = (...args) => craftAndEquipHarvester (...args,
 const craftAndEquipAlphaHarvester = (...args) => craftAndEquipHarvester (...args, 'alpha')
 const craftAndEquipKekHarvester = (...args) => craftAndEquipHarvester (...args, 'kek')
 
+const craftAndEquipFudReservoir = (...args) => craftAndEquipReservoir (...args, 'fud')
+const craftAndEquipFomoReservoir = (...args) => craftAndEquipReservoir (...args, 'fomo')
+const craftAndEquipAlphaReservoir = (...args) => craftAndEquipReservoir (...args, 'alpha')
+const craftAndEquipKekReservoir = (...args) => craftAndEquipReservoir (...args, 'kek')
+
 function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
     return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Maker.create)
 }
@@ -78,6 +83,10 @@ module.exports = {
     craftAndEquipFomoHarvester,
     craftAndEquipAlphaHarvester,
     craftAndEquipKekHarvester,
+    craftAndEquipFudReservoir,
+    craftAndEquipFomoReservoir,
+    craftAndEquipAlphaReservoir,
+    craftAndEquipKekReservoir,
     hasReachedMaxOfClass,
     hasReachedMaxOfType,
     getMissingPrerequisiteTypes
