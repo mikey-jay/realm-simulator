@@ -23,12 +23,26 @@ const installationTemplate = {
 }
 const harvesterTemplate = {
     ...installationTemplate,
-    harvestRates: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
+    harvestRates: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ],
+    class: 'harvester',
+    maxQuantityPerParcel: {
+        humble: 4,
+        reasonable: 16,
+        spacious: 128,
+        partner: 256
+    }
 }
 const reservoirTemplate = {
     ...installationTemplate,
     spilloverRates: [ 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.20, 0.15, 0.10 ],
-    capacities: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
+    capacities: [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ],
+    class: 'reservoir',
+    maxQuantityPerParcel: {
+        humble: 8,
+        reasonable: 32,
+        spacious: 256,
+        partner: 512
+    }
 }
 
 const secondsPerBlock = 2.3
@@ -36,6 +50,7 @@ const surveyingActBlocks = 60 / secondsPerBlock * 60 * 24 * 365 * 2 // 2 years
 const surveyingRoundBlocks = surveyingActBlocks / 4
 
 module.exports = {
+    maxReservoirEmptiesPerDay: 3,
     secondsPerBlock,
     parcelTokenAllocation: {
         fud: 100 * 10**9 * 0.5,
@@ -105,7 +120,7 @@ module.exports = {
     },
     maxConcurrentUpgrades: undefined,
     installations: {
-        altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined},
+        altar: {...structuredClone(installationTemplate), prerequisites: [], levelPrerequisite: undefined, class: 'altar'},
         reservoir_fud: structuredClone(reservoirTemplate),
         reservoir_fomo: structuredClone(reservoirTemplate),
         reservoir_alpha: structuredClone(reservoirTemplate),
@@ -114,7 +129,7 @@ module.exports = {
         harvester_fomo: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_fomo'},
         harvester_alpha: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_alpha'},
         harvester_kek: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_kek'},
-        maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+        maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ], class: 'maker'}
     },
     maxQuantityPerInstallationClass: {
         harvester: {
