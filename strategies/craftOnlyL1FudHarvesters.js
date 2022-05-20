@@ -65,6 +65,9 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
     if (installationToUpgrade.level < installationToUpgrade.buildLevel)
         return false
     
+    if (installationToUpgrade.level >= gotchiverseIn.rules.installations[installationType].maxLevel)
+        return false
+
     const buildCosts = gotchiverseIn.rules.installations[installationType].buildCosts[installationToUpgrade.level]
     if (!Player.hasSufficientTokens(me, buildCosts))
         return false
