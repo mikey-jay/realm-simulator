@@ -1,5 +1,6 @@
 const test = require('tape');
-const Parcel = require('../entities/parcel.js')
+const Parcel = require('../entities/parcel.js');
+const { pipe } = require('../utils.js');
 const alchemicaTokens = ['apple', 'pie']
 
 const parcelTypes = [
@@ -87,5 +88,17 @@ test('Parcel.getInstallationTypeCount', (t) => {
     t.equals(Parcel.getInstallationTypeCount(p3, 'type1'), 1)
     t.equals(Parcel.getInstallationTypeCount(p4, 'type2'), 2)
     t.equals(Parcel.getInstallationTypeCount(p4, 'not_a_type'), 0)
+    t.end()
+})
+
+test('Parcel.getIndexOfLowestLevelInstallation', (t) => {
+    const i1 = { type: 'type1', level: 3, width: 1, height: 1  }
+    const i2 = { type: 'type2', level: 4, width: 1, height: 1  }
+    const i3 = { type: 'type2', level: 5, width: 1, height: 1  }
+    const i4 = { type: 'type1', level: 2, width: 1, height: 1  }
+
+    const p = pipe(Parcel.create('spacious'), [Parcel.addInstallation, i1], [Parcel.addInstallation, i2], [Parcel.addInstallation, i3], [Parcel.addInstallation, i4])
+    t.equals(Parcel.getIndexOfLowestLevelInstallation(p, 'type1'), 3)
+    t.equals(Parcel.getIndexOfLowestLevelInstallation(p, 'type2'), 1)
     t.end()
 })

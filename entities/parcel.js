@@ -73,6 +73,12 @@ function getInstallationLevelCount (parcelIn, installationType) {
     return count
 }
 
+function getIndexOfLowestLevelInstallation(parcelIn, installationType) {
+    const lowestLevel = getInstallationLevelCount(parcelIn, installationType).findIndex((level) => level > 0) + 1
+    const index = parcelIn.installations.findIndex((i) => (i.type == installationType) && (i.level == lowestLevel))
+    return index
+}
+
 function getCurrentUpgradeCount (parcelIn) {
     return parcelIn.installations.filter((i) => i.buildLevel != i.level && i.buildLevel > 1).length
 }
@@ -106,5 +112,6 @@ module.exports = {
     getCurrentUpgradeCount,
     getTotalInstallations,
     getFreeSpace,
-    hasSpaceForInstallation
+    hasSpaceForInstallation,
+    getIndexOfLowestLevelInstallation
 }
