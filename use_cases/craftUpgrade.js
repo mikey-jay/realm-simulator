@@ -14,12 +14,9 @@ function craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, installationIndex
 
     if (buildLevel > getMaxLevelOfInstallationType(gotchiverseIn, playerIndex, parcelIndex, installationType)) throw new Error(`${installationType} cannot exceed maximum level of the highest level ${levelPrerequisite}`)
 
-    let maxConcurrentUpgrades = gotchiverseOut.rules.maxConcurrentUpgrades
+    let maxConcurrentUpgrades = getMaxConcurrentUpgradeLimit(gotchiverseOut, playerIndex, parcelIndex)
     if (typeof maxConcurrentUpgrades != 'undefined') {
         let concurrentUpgrades = Parcel.getCurrentUpgradeCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex])
-        const makerLevelCount = Parcel.getInstallationLevelCount(gotchiverseOut.players[playerIndex].parcels[parcelIndex], 'maker')
-        for (let l = 0 ; l < makerLevelCount.length ; l++)
-            maxConcurrentUpgrades += makerLevelCount[l] * gotchiverseOut.rules.installations.maker.concurrentUpgradeIncreases[l]
         if (concurrentUpgrades > maxConcurrentUpgrades) throw new Error(`Maximum concurrent upgrade limit of ${maxConcurrentUpgrades} has been reached`)
     }
  
@@ -30,7 +27,17 @@ function craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, installationIndex
     return gotchiverseOut
 }
 
+function getMaxConcurrentUpgradeLimit (gotchiverseIn, playerIndex, parcelIndex) {
+    let maxConcurrentUpgrades = gotchiverseIn.rules.maxConcurrentUpgrades
+    if (typeof maxConcurrentUpgrades == 'undefined') return undefined
+    const makerLevelCount = Parcel.getInstallationLevelCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex], 'maker')
+    for (let l = 0 ; l < makerLevelCount.length ; l++)
+        maxConcurrentUpgrades += makerLevelCount[l] * gotchiverseIn.rules.installations.maker.concurrentUpgradeIncreases[l]
+    return maxConcurrentUpgrades
+}
+
 function levelUpIfUpgradeComplete(gotchiverseIn, playerIndex, parcelIndex, installationIndex) {
+
     const gotchiverseOut = structuredClone(gotchiverseIn)
     if (gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations[installationIndex].timeComplete <= gotchiverseOut.currentTime)
         gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations[installationIndex].level = gotchiverseOut.players[playerIndex].parcels[parcelIndex].installations[installationIndex].buildLevel
@@ -114,5 +121,6 @@ module.exports = {
     upgradeHighestLevelKekReservoir,
     upgradeHighestLevelAltar,
     upgradeHighestLevelMaker,
-   getMaxLevelOfInstallationType
+   getMaxLevelOfInstallationType,
+   getMaxConcurrentUpgradeLimit
 }
