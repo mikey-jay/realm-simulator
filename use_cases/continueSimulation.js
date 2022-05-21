@@ -6,6 +6,8 @@ const { emptyParcelReservoirs } = require('./emptyReservoirs.js')
 
 function continueSimulation(simulationIn) {
     let simulationOut = structuredClone(simulationIn)
+    const pctComplete = Math.round(simulationIn.gotchiverse.currentTime / simulationIn.endTime * 100)
+    console.log(`Simulating realm... (${pctComplete}%) Block ${Math.round(simulationIn.gotchiverse.currentTime)} / ${Math.round(simulationIn.endTime)}`)
     for (let bi = 0 ; bi < simulationOut.bots.length ; bi++) {
         const useCaseFactory = require(`../strategies/${simulationOut.bots[bi].strategyName}`)
         for (let pi = 0 ; pi < simulationOut.gotchiverse.players[bi].parcels.length ; pi++) {
@@ -23,7 +25,7 @@ function continueSimulation(simulationIn) {
 
 function runUseCase(simulationIn, useCase, playerIndex, parcelIndex) {
     let simulationOut = structuredClone(simulationIn)
-    const beforeStrategyResult = Result.create(simulationIn.gotchiverse, playerIndex, parcelIndex)
+    const beforeStrategyResult = Result.create(simulationIn.gotchiverse, playerIndex, parcelIndex, simulationIn.results[simulationIn.results.length - 1] || { playerTotals: {}, parcelTotals: {} })
     simulationOut.gotchiverse = useCase(simulationOut.gotchiverse, playerIndex, parcelIndex)
     const afterStrategyResult = Result.create(simulationOut.gotchiverse, playerIndex, parcelIndex, useCase.name, beforeStrategyResult)
     simulationOut = Simulation.addResult(simulationOut, afterStrategyResult)
