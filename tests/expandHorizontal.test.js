@@ -38,20 +38,6 @@ test('expandHorizontal - all else equal, choose fud', (t) => {
 })
 
 
-test('expandHorizontal - all prerequisites met', (t) => {
-    const rules = require('../rulesets/testRules.js')
-    
-    let altarL1 = pipe(Altar.create(), Altar.addLevel)
-    let reservoirL9 = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
-    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'fud', 100000])
-    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
-    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
-
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudHarvester', 'all prerequisites are met - return craft harvester use case')
-
-    t.end()
-})
-
 test('expandHorizontal - insufficient funds', (t) => {
     const rules = require('../rulesets/testRules.js')
     
