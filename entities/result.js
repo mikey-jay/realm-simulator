@@ -10,7 +10,8 @@ function create(gotchiverse, playerIndex, parcelIndex, useCaseName = '', lastRes
     }
     const parcelTotals = {
         tokens: structuredClone(gotchiverse.players[playerIndex].parcels[parcelIndex].tokens),
-        installations: Parcel.getTotalInstallations(gotchiverse.players[playerIndex].parcels[parcelIndex])    
+        installations: Parcel.getTotalInstallations(gotchiverse.players[playerIndex].parcels[parcelIndex]),
+        installationClasses: Parcel.getTotalInstallationsByClass(gotchiverse.players[playerIndex].parcels[parcelIndex])    
     }
     const playerChange = subtractObjectKeys(playerTotals, lastResult.playerTotals)
     const parcelChange = subtractObjectKeys(parcelTotals, lastResult.parcelTotals)

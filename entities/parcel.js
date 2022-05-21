@@ -92,7 +92,7 @@ function getCurrentUpgradeCount (parcelIn) {
     return parcelIn.installations.filter((i) => i.buildLevel != i.level && i.buildLevel > 1).length
 }
 
-function getTotalInstallations (parcelIn) {
+function getTotalInstallationsByTypeAndLevel (parcelIn) {
     const zeroTotals = [0,0,0,0,0,0,0,0,0]
     let totals = {}
     for (i of parcelIn.installations) {
@@ -102,6 +102,17 @@ function getTotalInstallations (parcelIn) {
         }
     }
     return totals;
+}
+
+function getTotalInstallationsByClass (parcelIn) {
+    let totals = {}
+    for (i of parcelIn.installations) {
+        if (i.level > 0) {
+            if (typeof totals[i.class] == 'undefined') totals[i.class] = 0
+            totals[i.class]++
+        }
+    }
+    return totals;    
 }
 
 module.exports = {
@@ -119,9 +130,10 @@ module.exports = {
     getInstallationTypeIndexes,
     getInstallationClassIndexes,
     getCurrentUpgradeCount,
-    getTotalInstallations,
+    getTotalInstallations: getTotalInstallationsByTypeAndLevel,
     getFreeSpace,
     hasSpaceForInstallation,
     getIndexOfLowestLevelInstallation,
-    getIndexOfHighestLevelInstallation
+    getIndexOfHighestLevelInstallation,
+    getTotalInstallationsByClass
 }
