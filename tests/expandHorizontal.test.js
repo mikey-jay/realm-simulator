@@ -141,7 +141,7 @@ test('expandHorizontal - do not upgrade reservoir if one is already being upgrad
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
-    t.false(expandHorizontal(verse, 0, 0))
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudHarvester')
 
     t.end()
 })
@@ -193,6 +193,21 @@ test('expandHorizontal - upgrade a maker if upgrading another installation would
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.maxConcurrentUpgrades = 1
     t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelMaker')
+
+    t.end()
+})
+
+test('expandHorizontal - if cant upgrade', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    rules.installations.harvester_fud.maxQuantityPerParcel.humble = 1
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
+    let harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
+    let testParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[1]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelFudHarvester', 'new harvester limit reached - upgrade the lowest level harvester')
 
     t.end()
 })

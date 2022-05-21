@@ -8,7 +8,10 @@ const { getWalletValueInFudTerms } = require('../use_cases/getWalletValueInFudTe
 
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek']) => {
     const mostAbundantToken = getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm)
-    return craftHarvestersOfType(verseIn, playerIndex, parcelIndex, mostAbundantToken)
+    const args = [verseIn, playerIndex, parcelIndex, mostAbundantToken]
+    const craft = craftHarvestersOfType(...args)
+    const upgrade = upgradeLowestLevelHarvesterOfType(...args)
+    return craft || upgrade
 }
 
 function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm) {
@@ -35,7 +38,7 @@ function craftHarvestersOfType(verseIn, playerIndex, parcelIndex, tokenToFarm) {
     const reservoirCount = Parcel.getInstallationTypeCount(myParcel, reservoirType)
     const maxReservoirEmptiesPerDay = verseIn.rules.maxReservoirEmptiesPerDay
     const totalHarvestRate = getTotalHarvestRates(verseIn, playerIndex, parcelIndex)[tokenToFarm]
-    const totalReservoirCapacity = getTotalReservoirCapacities(verseIn, playerIndex, parcelIndex)[tokenToFarm]
+    const totalReservoirCapacity = getTotalReservoirCapacitiesIncludingUpgradesInProgress(verseIn, playerIndex, parcelIndex)[tokenToFarm]
 
     if (reservoirCount == 0)
         return craftNewInstallation(verseIn, playerIndex, parcelIndex, reservoirType)
@@ -58,11 +61,11 @@ function getTotalHarvestRates(verseIn, playerIndex, parcelIndex) {
     return totalHarvestRate
 }
 
-function getTotalReservoirCapacities(verseIn, playerIndex, parcelIndex) {
+function getTotalReservoirCapacitiesIncludingUpgradesInProgress(verseIn, playerIndex, parcelIndex) {
     const reservoirs = Parcel.getInstallationsOfClass(verseIn.players[playerIndex].parcels[parcelIndex], 'reservoir').filter((h) => h.level > 0)
     const getReservoirCapacity = (r) => {
         let capacity = { fud: 0, fomo: 0, alpha: 0, kek: 0 }
-        capacity[r.resourceToken] = verseIn.rules.installations[r.type].capacities[r.level - 1]
+        capacity[r.resourceToken] = verseIn.rules.installations[r.type].capacities[r.buildLevel - 1]
         return capacity
     }
     const reservoirCapacities = reservoirs.map(getReservoirCapacity)
@@ -72,6 +75,8 @@ function getTotalReservoirCapacities(verseIn, playerIndex, parcelIndex) {
 
 const upgradeLowestLevelInstallation = (...args) => upgradeInstallation(...args, true)
 const upgradeHighestLevelInstallation = (...args) => upgradeInstallation(...args, false)
+
+const upgradeLowestLevelHarvesterOfType = (gotchiverseIn, playerIndex, parcelIndex, token) => upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, `harvester_${token}`)
 
 function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installationType, upgradeLowest = true) {
 
