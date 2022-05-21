@@ -28,7 +28,7 @@ function craftAndEquipInstallation (gotchiverseIn, playerIndex, parcelIndex, ins
 }
 
 function craftAndEquipAltar(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Altar.create)
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'altar')
 }
 
 function craftAndEquipReservoir(gotchiverseIn, playerIndex, parcelIndex, resourceToken) {
@@ -50,7 +50,7 @@ const craftAndEquipAlphaReservoir = (...args) => craftAndEquipReservoir (...args
 const craftAndEquipKekReservoir = (...args) => craftAndEquipReservoir (...args, 'kek')
 
 function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
-    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, Maker.create)
+    return craftAndEquipInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
 }
 
 function hasReachedMaxOfType (gotchiverseIn, playerIndex, parcelIndex, installationType) {
