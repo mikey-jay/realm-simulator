@@ -1,5 +1,5 @@
 const test = require('tape');
-const craftOnlyL1FudHarvesters = require('../strategies/craftOnlyL1FudHarvesters.js')
+const expandHorizontal = require('../strategies/expandHorizontal.js')
 const Parcel = require('../entities/parcel.js')
 const Maker = require('../entities/maker.js')
 const Harvester = require('../entities/harvester.js')
@@ -9,7 +9,36 @@ const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
 const { pipe } = require('../utils.js')
 
-test('craftOnlyL1FudHarvesters - all prerequisites met', (t) => {
+test('expandHorizontal - choose the most abundant alchemica to harvest', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 100], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipAlphaHarvester', 'all prerequisites are met - return craft fomo harvester use case')
+
+    t.end()
+})
+
+test('expandHorizontal - all else equal, choose fud', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudHarvester', 'all prerequisites are met - return craft fomo harvester use case')
+
+    t.end()
+})
+
+
+test('expandHorizontal - all prerequisites met', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -18,12 +47,12 @@ test('craftOnlyL1FudHarvesters - all prerequisites met', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'craftAndEquipFudHarvester', 'all prerequisites are met - return craft harvester use case')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudHarvester', 'all prerequisites are met - return craft harvester use case')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - insufficient funds', (t) => {
+test('expandHorizontal - insufficient funds', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -32,12 +61,12 @@ test('craftOnlyL1FudHarvesters - insufficient funds', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.false(craftOnlyL1FudHarvesters(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0))
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - already reached max installation count', (t) => {
+test('expandHorizontal - already reached max installation count', (t) => {
     const rules = require('../rulesets/testRules.js')
 
     rules.installations.harvester_fud.maxQuantityPerParcel.humble = 1
@@ -49,12 +78,12 @@ test('craftOnlyL1FudHarvesters - already reached max installation count', (t) =>
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.false(craftOnlyL1FudHarvesters(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0))
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - missing preqrequisite - build prerequisite first', (t) => {
+test('expandHorizontal - missing preqrequisite - build prerequisite first', (t) => {
     const rules = require('../rulesets/testRules.js')
     rules.installations.harvester_fud.prerequisites = ['altar']
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -64,12 +93,12 @@ test('craftOnlyL1FudHarvesters - missing preqrequisite - build prerequisite firs
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'craftAndEquipAltar')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipAltar')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - no space for installation', (t) => {
+test('expandHorizontal - no space for installation', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -82,12 +111,12 @@ test('craftOnlyL1FudHarvesters - no space for installation', (t) => {
     verse.players[0].parcels[0].height = 2
     verse.players[0].parcels[0].width = 2
 
-    t.false(craftOnlyL1FudHarvesters(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0))
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - craft a reservoir first', (t) => {
+test('expandHorizontal - craft a reservoir first', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -95,12 +124,12 @@ test('craftOnlyL1FudHarvesters - craft a reservoir first', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'craftAndEquipFudReservoir', 'missing reservoir - craft one first')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudReservoir', 'missing reservoir - craft one first')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - upgrade reservoir if there is not enough capacity to meet emptying frequency', (t) => {
+test('expandHorizontal - upgrade reservoir if there is not enough capacity to meet emptying frequency', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -110,12 +139,12 @@ test('craftOnlyL1FudHarvesters - upgrade reservoir if there is not enough capaci
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'upgradeLowestLevelFudReservoir')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelFudReservoir')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - do not upgrade reservoir if one is already being upgraded', (t) => {
+test('expandHorizontal - do not upgrade reservoir if one is already being upgraded', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -126,12 +155,12 @@ test('craftOnlyL1FudHarvesters - do not upgrade reservoir if one is already bein
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
-    t.false(craftOnlyL1FudHarvesters(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0))
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - upgrade level prerequisites before upgrading reservoir', (t) => {
+test('expandHorizontal - upgrade level prerequisites before upgrading reservoir', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -142,12 +171,12 @@ test('craftOnlyL1FudHarvesters - upgrade level prerequisites before upgrading re
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.installations.reservoir_fud.levelPrerequisite = 'altar'
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'upgradeHighestLevelAltar')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeHighestLevelAltar')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - craft a maker if out of max concurrent upgrades', (t) => {
+test('expandHorizontal - craft a maker if out of max concurrent upgrades', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -159,12 +188,12 @@ test('craftOnlyL1FudHarvesters - craft a maker if out of max concurrent upgrades
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.maxConcurrentUpgrades = 1
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'craftAndEquipMaker')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipMaker')
 
     t.end()
 })
 
-test('craftOnlyL1FudHarvesters - upgrade a maker if upgrading another installation would max out concurrent upgrades', (t) => {
+test('expandHorizontal - upgrade a maker if upgrading another installation would max out concurrent upgrades', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -177,7 +206,7 @@ test('craftOnlyL1FudHarvesters - upgrade a maker if upgrading another installati
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.maxConcurrentUpgrades = 1
-    t.equals(craftOnlyL1FudHarvesters(verse, 0, 0).name, 'upgradeLowestLevelMaker')
+    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelMaker')
 
     t.end()
 })
