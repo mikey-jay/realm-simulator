@@ -11,8 +11,12 @@ function craftUpgrade(gotchiverseIn, playerIndex, parcelIndex, installationIndex
 
     if (buildLevel > currentLevel + 1) throw new Error('Can\'t upgrade while an upgrade is already in progress')
     if (buildLevel > 9) throw new Error('Can\'t upgrade - maximum installation level of 9 reached')
-
-    if (buildLevel > getMaxLevelOfInstallationType(gotchiverseIn, playerIndex, parcelIndex, installationType)) throw new Error(`${installationType} cannot exceed maximum level of the highest level ${levelPrerequisite}`)
+    
+    const levelPrerequisite = gotchiverseIn.rules.installations[installationType].levelPrerequisite
+    if (typeof levelPrerequisite != 'undefined') {
+        const maxLevelOfPrerequisite = getMaxLevelOfInstallationType(gotchiverseIn, playerIndex, parcelIndex, levelPrerequisite)
+        if (buildLevel > maxLevelOfPrerequisite) throw new Error(`${installationType} cannot exceed maximum level of the highest level ${levelPrerequisite}`)
+    }
 
     let maxConcurrentUpgrades = getMaxConcurrentUpgradeLimit(gotchiverseOut, playerIndex, parcelIndex)
     if (typeof maxConcurrentUpgrades != 'undefined') {
@@ -88,11 +92,7 @@ function levelUpAllCompletedUpgrades(gotchiverseIn) {
 }
 
 function getMaxLevelOfInstallationType(gotchiverseIn, playerIndex, parcelIndex, installationType) {
-    const levelPrerequisite = gotchiverseIn.rules.installations[installationType].levelPrerequisite
-
-    if (typeof levelPrerequisite == 'undefined') return gotchiverseIn.rules.installations[installationType].maxLevel
-
-    return Math.max(0,...gotchiverseIn.players[playerIndex].parcels[parcelIndex].installations.filter((i) => levelPrerequisite == i.type).map((i) => i.level))
+    return Math.max(0,...gotchiverseIn.players[playerIndex].parcels[parcelIndex].installations.filter((i) => installationType == i.type).map((i) => i.level))
 }
 
 module.exports = {

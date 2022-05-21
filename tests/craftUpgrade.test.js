@@ -1,5 +1,5 @@
 const test = require('tape');
-const { craftUpgrade, upgradeLowestLevelInstallationOfType } = require('../use_cases/craftUpgrade.js')
+const { craftUpgrade, upgradeLowestLevelInstallationOfType, getMaxLevelOfInstallationType } = require('../use_cases/craftUpgrade.js')
 const { pipe } = require('../utils.js')
 const Installation = require('../entities/installation.js')
 const Harvester = require('../entities/harvester.js')
@@ -109,5 +109,20 @@ test('upgradeLowestLevelOfInstallationType', (t) => {
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
     let result = upgradeLowestLevelInstallationOfType(verse, 0, 0, 'harvester_fud')
     t.deepEquals([3,3,1], result.players[0].parcels[0].installations.map((i) => i.buildLevel), 'build level of lowest level has increased')
+    t.end()
+})
+
+test('getMaxLevelOfInstallationType', (t) => {
+
+    const harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
+    const harvesterL2 = pipe(harvesterL1, Harvester.addLevel)
+    const harvesterL3 = pipe(harvesterL2, Harvester.addLevel)
+    const rules = require('../rulesets/testRules.js')
+
+    const testParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, harvesterL3], [Parcel.addInstallation, harvesterL2], [Parcel.addInstallation, harvesterL1])
+    const testPlayer = pipe(Player.create(), [Player.addParcel, testParcel])
+    const verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.equals(getMaxLevelOfInstallationType(verse, 0, 0, 'harvester_fud'), 3)
     t.end()
 })
