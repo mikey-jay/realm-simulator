@@ -5,12 +5,10 @@ function pipe(input, ...args) {
     return pipe(func(input, ...params), ...args)
 }
 
+const sumArray = (arr) => arr.reduce((total, item) => total + item)
+
 function getWeightedAverage(dataset, weights) {
     if (dataset.length !== weights.length) throw new Error('Cannot get weighted average - dataset and weights must be arrays of the same length')
-    const sumArray = (arr) => arr.reduce((total, item) => total + item)
-    //const averageArray = (arr) => sumArray(arr) / arr.length
-    // const sumOfWeights = sumArray(weights)
-    //const pctOfTotalWeights = weights.map((w) => w / sumOfWeights)
     let weightedDataset = []
     for (let i = 0 ; i < dataset.length ; i++) {
         weightedDataset.push(dataset[i] * weights[i])
@@ -63,5 +61,6 @@ module.exports = {
     getWeightedAverage,
     addArrays,
     addObjectKeys,
-    subtractObjectKeys
+    subtractObjectKeys,
+    sumArray
 }
