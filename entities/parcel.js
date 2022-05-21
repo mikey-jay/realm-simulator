@@ -1,3 +1,4 @@
+const { sumArray } = require('../utils.js')
 const Wallet = require('./wallet.js')
 
 const parcelSizes = {
@@ -67,10 +68,21 @@ function getInstallationsOfClass (parcelIn, installationType) {
     return parcelIn.installations.filter((i) => i.class == installationType)
 }
 
-function getInstallationLevelCount (parcelIn, installationType) {
+function getInstallationLevelCount (parcelIn, installationTypeOrClass) {
     let count = [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-    parcelIn.installations.filter((i) => i.type == installationType).forEach((i) => count[i.level - 1]++)
+    parcelIn.installations.filter((i) => (i.type == installationTypeOrClass) || (i.class == installationTypeOrClass)).forEach((i) => count[i.level - 1]++)
     return count
+}
+
+function getAverageLevelOfInstallation (parcelIn, installationTypeOrClass) {
+    const installationLevelCount = getInstallationLevelCount(parcelIn, installationTypeOrClass)
+    const installationCount = sumArray(installationLevelCount)
+    if (installationCount == 0) return 0
+    let sumOfLevels = 0
+    for (let i = 0 ; i < installationLevelCount.length ; i++) {
+        sumOfLevels += installationLevelCount[i] * (i + 1)
+    }
+    return sumOfLevels / installationCount
 }
 
 function getIndexOfLowestLevelInstallation(parcelIn, installationType) {
@@ -99,9 +111,28 @@ function getTotalInstallationsByTypeAndLevel (parcelIn) {
         if (i.level > 0) {
             if (typeof totals[i.type] == 'undefined') totals[i.type] = [...zeroTotals]
             totals[i.type][i.level - 1]++
+            if (i.type != i.class) {
+                if (typeof totals[i.class] == 'undefined') totals[i.class] = [...zeroTotals]
+                totals[i.class][i.level - 1]++
+            }
         }
     }
     return totals;
+}
+
+function getAverageInstallationLevels (parcelIn) {
+    let averages = {}
+    for (i of parcelIn.installations) {
+        if (i.level > 0) {
+            if (typeof averages[i.type] == 'undefined') 
+                averages[i.type] = getAverageLevelOfInstallation(parcelIn, i.type)
+            if (i.type != i.class) {
+                if (typeof averages[i.class] == 'undefined') 
+                averages[i.class] = getAverageLevelOfInstallation(parcelIn, i.class)
+            }
+        }
+    }
+    return averages;
 }
 
 function getTotalInstallationsByClass (parcelIn) {
@@ -135,5 +166,7 @@ module.exports = {
     hasSpaceForInstallation,
     getIndexOfLowestLevelInstallation,
     getIndexOfHighestLevelInstallation,
-    getTotalInstallationsByClass
+    getTotalInstallationsByClass,
+    getAverageLevelOfInstallation,
+    getAverageInstallationLevels
 }

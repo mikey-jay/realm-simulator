@@ -114,3 +114,15 @@ test('Parcel.getIndexOfHighestLevelInstallation', (t) => {
     t.equals(Parcel.getIndexOfHighestLevelInstallation(p, 'type2'), 2)
     t.end()
 })
+
+test('Parcel.getAverageLevelOfInstallation', (t) => {
+    const i1 = { type: 'type1', level: 2, width: 1, height: 1  }
+    const i2 = { type: 'type2', level: 3, width: 1, height: 1  }
+    const i3 = { type: 'type2', level: 7, width: 1, height: 1  }
+    const i4 = { type: 'type1', level: 6, width: 1, height: 1  }
+
+    const p = pipe(Parcel.create('spacious'), [Parcel.addInstallation, i1], [Parcel.addInstallation, i2], [Parcel.addInstallation, i3], [Parcel.addInstallation, i4])
+    t.equals(Parcel.getAverageLevelOfInstallation(p, 'type1'), 4)
+    t.equals(Parcel.getAverageLevelOfInstallation(p, 'type2'), 5)
+    t.end()
+})

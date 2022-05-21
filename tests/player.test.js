@@ -72,7 +72,7 @@ test('Player.getTotalInstallations', (t) => {
     const parcel2 = pipe(Parcel.create('reasonable'), [Parcel.addInstallation, altarL2], [Parcel.addInstallation, fudHarvesterL2], [Parcel.addInstallation, kekHarvesterL3])
 
     const w = pipe(Player.create(), [Player.addParcel, parcel1], [Player.addParcel, parcel2])
-    const totalInstallations = { altar: [1,1,0,0,0,0,0,0,0], harvester_fud: [1,1,0,0,0,0,0,0,0], harvester_kek: [0,0,1,0,0,0,0,0,0] }
+    const totalInstallations = { altar: [1,1,0,0,0,0,0,0,0], harvester: [1,1,1,0,0,0,0,0,0], harvester_fud: [1,1,0,0,0,0,0,0,0], harvester_kek: [0,0,1,0,0,0,0,0,0] }
     t.deepEquals(Player.getTotalInstallations(w), totalInstallations, 'has installations returns correct counts')
     t.end()
 })
