@@ -114,12 +114,14 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
     if (concurrentUpgrades >= maxConcurrentUpgradeLimit)
         return canCraftAMaker ? craftAndEquipMaker : false
 
-    const lowestLevelMaker = myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, 'maker')]
+    if (installationType != 'maker') {
+        const lowestLevelMaker = myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, 'maker')]
 
-    if (!canCraftAMaker && (typeof lowestLevelMaker != 'undefined') && concurrentUpgrades >= maxConcurrentUpgradeLimit - 1) {
-        const canUpgradeMaker = (lowestLevelMaker.level >= lowestLevelMaker.buildLevel) && (lowestLevelMaker.level < gotchiverseIn.rules.installations.maker.maxLevel)
-        if (canUpgradeMaker)
-            return upgradeLowestLevelMaker
+        if (!canCraftAMaker && (typeof lowestLevelMaker != 'undefined') && concurrentUpgrades >= maxConcurrentUpgradeLimit - 1) {
+            const canUpgradeMaker = (lowestLevelMaker.level >= lowestLevelMaker.buildLevel) && (lowestLevelMaker.level < gotchiverseIn.rules.installations.maker.maxLevel)
+            if (canUpgradeMaker)
+                return upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
+        }
     }
 
     switch (installationType) {

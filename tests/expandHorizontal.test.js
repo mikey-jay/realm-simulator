@@ -183,11 +183,11 @@ test('expandHorizontal - upgrade a maker if upgrading another installation would
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
-    altarL1.buildLevel++
     let reservoirL1 = pipe(Reservoir.create('fud'), Reservoir.addLevel)
     let harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
+    let harvesterL1UpgradeInProgress = pipe(Harvester.create('fud'), Harvester.addLevel) ; harvesterL1UpgradeInProgress.buildLevel++
     let makerL1 = pipe(Maker.create('fud'), Maker.addLevel)
-    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, makerL1], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'fud', 100000])
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, makerL1], [Parcel.addInstallation, harvesterL1UpgradeInProgress], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'fud', 100000])
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.maker.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
@@ -197,7 +197,28 @@ test('expandHorizontal - upgrade a maker if upgrading another installation would
     t.end()
 })
 
-test('expandHorizontal - if cant upgrade', (t) => {
+test('expandHorizontal - dont upgrade maker if it would exceed a prerequisite level', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    altarL1.buildLevel++
+    let reservoirL1 = pipe(Reservoir.create('fud'), Reservoir.addLevel)
+    let harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
+    let makerL1 = pipe(Maker.create('fud'), Maker.addLevel)
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, makerL1], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'fud', 100000])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.maker.buildCosts[1]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    verse.rules.installations.reservoir_fud.capacities[0] = 1
+    verse.rules.maxConcurrentUpgrades = 1
+    verse.rules.installations.reservoir_fud.levelPrerequisite = 'altar'
+    verse.rules.installations.maker.levelPrerequisite = 'altar'
+    const result = expandHorizontal(verse, 0, 0)
+    t.false(result)
+
+    t.end()
+})
+
+test('expandHorizontal - if cant craft new harvesters, start upgrading', (t) => {
     const rules = require('../rulesets/testRules.js')
     rules.installations.harvester_fud.maxQuantityPerParcel.humble = 1
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
