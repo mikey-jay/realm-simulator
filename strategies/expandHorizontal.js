@@ -6,12 +6,12 @@ const { addObjectKeys, pipe } = require('../utils.js')
 const { upgradeLowestLevelAltar, upgradeLowestLevelMaker, upgradeLowestLevelFudHarvester, upgradeLowestLevelFomoHarvester, upgradeLowestLevelAlphaHarvester, upgradeLowestLevelKekHarvester, upgradeLowestLevelFudReservoir, upgradeLowestLevelFomoReservoir, upgradeLowestLevelAlphaReservoir, upgradeLowestLevelKekReservoir, upgradeHighestLevelAltar, upgradeHighestLevelMaker, upgradeHighestLevelFudHarvester, upgradeHighestLevelFomoHarvester, upgradeHighestLevelAlphaHarvester, upgradeHighestLevelKekHarvester, upgradeHighestLevelFudReservoir, upgradeHighestLevelFomoReservoir, upgradeHighestLevelAlphaReservoir, upgradeHighestLevelKekReservoir, getMaxConcurrentUpgradeLimit } = require('../use_cases/craftUpgrade.js')
 const { getWalletValueInFudTerms } = require('../use_cases/getWalletValueInFudTerms.js')
 
-module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek']) => {
+module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false) => {
     const mostAbundantToken = getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm)
     const args = [verseIn, playerIndex, parcelIndex, mostAbundantToken]
-    const craft = craftHarvestersOfType(...args)
-    const upgrade = upgradeLowestLevelHarvesterOfType(...args)
-    return craft || upgrade
+    const craftHarvesters = craftHarvestersOfType(...args)
+    const upgradeHarvesters = upgradeLowestLevelHarvesterOfType(...args)
+    return upgradeHarvestersBeforeCraftingMore ? upgradeHarvesters || craftHarvesters : craftHarvesters || upgradeHarvesters
 }
 
 function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm) {
