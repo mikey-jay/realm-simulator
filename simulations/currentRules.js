@@ -37,7 +37,7 @@ const formatResult = (resultIn) => {
 const startingAlchemica = rules.avgBaseAlchemicaPerParcel.spacious
 const horizontalBot = pipe(Bot.create('expandHorizontal'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
 const verticalBot = pipe(Bot.create('expandVertical'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const sim = pipe(Simulation.create('current', 8, 10), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
+const sim = pipe(Simulation.create('current', 8), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
 const { Parser, transforms: { unwind, flatten } } = require('json2csv');
 const json2csvParser = new Parser({ transforms: [flatten({separator: '.', objects: true, arrays: true})] });
 const formattedResults = sim.results.map(formatResult)
