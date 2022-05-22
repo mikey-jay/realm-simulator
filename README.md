@@ -19,6 +19,7 @@ All bots play according to the following rules.
 - bots are considered to have a virtually unlimited bankroll (though it is possible to limit it in the simulation settings), and they reinvest every penny in their parcel
 - bots are given a single parcel to build on - this is currently a spacious parcel but this is configurable in the simulation - the parcel is assumed to get an average VRF roll for its alchemica supply, and does not have any boosts (both of these variables are configurable, however)
 - bots do not spend any GLTR to speed up installation crafting - since the value of GLTR vs alchemica is dynamic, its cost is not able to be assumed it a meaningful way in the simulation
+- bots do not collect any spillover - all spillover from reservoirs is assumed lost
 
 In addition to the rules above, the following strategies are examined in the simulation. The code that runs the bot strategies is contained in the `/strategies` folder of the project.
 
