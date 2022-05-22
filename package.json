@@ -4,7 +4,8 @@
   "description": "Aavegotchi realm simulation tool",
   "main": "app.js",
   "scripts": {
-    "test": "./node_modules/.bin/tape ./tests/*.test.js | ./node_modules/.bin/faucet"
+    "test": "./node_modules/.bin/tape ./tests/*.test.js | ./node_modules/.bin/faucet",
+    "start": "node app.js"
   },
   "keywords": [
     "aavegotchi",
