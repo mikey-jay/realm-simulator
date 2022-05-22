@@ -1,0 +1,1 @@
+require('./simulations/currentRules.js')
