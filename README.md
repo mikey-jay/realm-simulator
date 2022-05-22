@@ -31,7 +31,7 @@ The upgradooor bot (player 1 in the simulation), seeks to upgrade existing harve
 Rulesets are contained in the `/rulesets` folder of the project. This is where game rules can be modified to examine their impact on the simulation output. The `current.js` ruleset file contains the rules as they currently exist as of bible chapter 4.
 
 ## Results
-Results are output to a .csv file in the same folder as the simulation
+Results are output to a .csv file in the `results` folder. These can be imported into a spreadsheet for further charting and analysis. I will try and put PDF's with charts in the folder as well. :)
 
 **Note**: The reservoir spillover rates have not yet been announced, the simulation uses the same spillover rates as altars.
 
