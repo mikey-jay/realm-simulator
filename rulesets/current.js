@@ -265,7 +265,7 @@ module.exports = {
         greatPortal: 0.35,
         pixelCraft: 0.3,
         dao: 0.3,
-        burn: 0.5
+        burn: 0.05
     },
     maxConcurrentUpgrades: 1,
     installations: {
