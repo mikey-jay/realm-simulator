@@ -220,15 +220,33 @@ test('expandHorizontal - dont upgrade maker if it would exceed a prerequisite le
 
 test('expandHorizontal - if cant craft new harvesters, start upgrading', (t) => {
     const rules = require('../rulesets/testRules.js')
-    rules.installations.harvester_fud.maxQuantityPerParcel.humble = 1
+    rules.maxQuantityPerInstallationClass.harvester.humble = 1
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
     let reservoirL9 = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
     let harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
     let testParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const result = expandHorizontal(verse, 0, 0)
+    t.equals(result.name, 'upgradeLowestLevelFudHarvester', 'new harvester limit reached - upgrade the lowest level harvester')
 
-    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelFudHarvester', 'new harvester limit reached - upgrade the lowest level harvester')
+    t.end()
+})
+
+test('expandHorizontal - if waiting on reservoir upgrade to craft next harvester, dont upgrade harvester until the limit has been reached', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL1 = pipe(Reservoir.create('fud'), Reservoir.addLevel)
+    reservoirL1.buildLevel = 2
+    let harvesterL1 = pipe(Harvester.create('fud'), Harvester.addLevel)
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, harvesterL1], [Parcel.addInstallation, reservoirL1], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'fud', 100000])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    verse.rules.installations.reservoir_fud.capacities[0] = 1
+    verse.rules.installations.reservoir_fud.capacities[1] = 1
+    verse.rules.maxConcurrentUpgrades = 1
+    t.false(expandHorizontal(verse, 0, 0))
 
     t.end()
 })

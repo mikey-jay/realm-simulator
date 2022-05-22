@@ -9,9 +9,20 @@ const { getWalletValueInFudTerms } = require('../use_cases/getWalletValueInFudTe
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false) => {
     const mostAbundantToken = getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm)
     const args = [verseIn, playerIndex, parcelIndex, mostAbundantToken]
-    const craftHarvesters = craftHarvestersOfType(...args)
-    const upgradeHarvesters = upgradeLowestLevelHarvesterOfType(...args)
-    return upgradeHarvestersBeforeCraftingMore ? upgradeHarvesters || craftHarvesters : craftHarvesters || upgradeHarvesters
+    const canCraftAHarvester = !hasReachedMaxOfClass(verseIn, playerIndex, parcelIndex, 'harvester')
+    const canUpgradeAHarvester =
+        getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, mostAbundantToken) < verseIn.rules.installations[`harvester_${mostAbundantToken}`].maxLevel
+        && Parcel.getInstallationTypeCount(verseIn.players[playerIndex].parcels[parcelIndex], `harvester_${mostAbundantToken}`)
+    if (upgradeHarvestersBeforeCraftingMore) {
+        return canUpgradeAHarvester ? upgradeLowestLevelHarvesterOfType(...args) : craftHarvestersOfType(...args)
+    }
+    return canCraftAHarvester ? craftHarvestersOfType(...args) : upgradeLowestLevelHarvesterOfType(...args) 
+}
+
+function getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, token) {
+    const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
+    const lowestBuildLevelHarvester = Parcel.getIndexOfLowestBuildLevelInstallation(myParcel, `harvester_${token}`)
+    return lowestBuildLevelHarvester.buildLevel || 0
 }
 
 function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm) {
@@ -30,6 +41,23 @@ function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensT
     return mostAbundantToken
 }
 
+function doesReservoirNeedUpgrade(verseIn, playerIndex, parcelIndex, token) {
+    const harvesterType = `harvester_${token}`
+    const reservoirType = `reservoir_${token}`
+    const me = verseIn.players[playerIndex]
+    const myParcel = me.parcels[parcelIndex]
+    const reservoirCount = Parcel.getInstallationTypeCount(myParcel, reservoirType)
+    const maxReservoirEmptiesPerDay = verseIn.rules.maxReservoirEmptiesPerDay
+    const totalHarvestRate = getTotalHarvestRates(verseIn, playerIndex, parcelIndex)[token]
+    const totalReservoirCapacity = getTotalReservoirCapacitiesIncludingUpgradesInProgress(verseIn, playerIndex, parcelIndex)[token]
+
+    if (totalReservoirCapacity == 0 || totalHarvestRate / totalReservoirCapacity > maxReservoirEmptiesPerDay)
+        return true
+
+    return false
+
+}
+
 function craftHarvestersOfType(verseIn, playerIndex, parcelIndex, tokenToFarm) {
     const harvesterType = `harvester_${tokenToFarm}`
     const reservoirType = `reservoir_${tokenToFarm}`
@@ -43,7 +71,7 @@ function craftHarvestersOfType(verseIn, playerIndex, parcelIndex, tokenToFarm) {
     if (reservoirCount == 0)
         return craftNewInstallation(verseIn, playerIndex, parcelIndex, reservoirType)
 
-    if (totalReservoirCapacity == 0 || totalHarvestRate / totalReservoirCapacity > maxReservoirEmptiesPerDay)
+    if (doesReservoirNeedUpgrade(verseIn, playerIndex, parcelIndex, tokenToFarm))
         return upgradeLowestLevelInstallation(verseIn, playerIndex, parcelIndex, reservoirType)
 
     return craftNewInstallation(verseIn, playerIndex, parcelIndex, harvesterType)
@@ -76,7 +104,10 @@ function getTotalReservoirCapacitiesIncludingUpgradesInProgress(verseIn, playerI
 const upgradeLowestLevelInstallation = (...args) => upgradeInstallation(...args, true)
 const upgradeHighestLevelInstallation = (...args) => upgradeInstallation(...args, false)
 
-const upgradeLowestLevelHarvesterOfType = (gotchiverseIn, playerIndex, parcelIndex, token) => upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, `harvester_${token}`)
+const upgradeLowestLevelHarvesterOfType = (gotchiverseIn, playerIndex, parcelIndex, token) => {
+    const installationTypeToUpgrade = doesReservoirNeedUpgrade(gotchiverseIn, playerIndex,parcelIndex, token) ? `reservoir_${token}` : `harvester_${token}`
+    return upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, installationTypeToUpgrade)
+}
 
 function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installationType, upgradeLowest = true) {
 
