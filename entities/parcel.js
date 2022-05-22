@@ -74,6 +74,12 @@ function getInstallationLevelCount (parcelIn, installationTypeOrClass) {
     return count
 }
 
+function getInstallationBuildLevelCount (parcelIn, installationTypeOrClass) {
+    let count = [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    parcelIn.installations.filter((i) => (i.type == installationTypeOrClass) || (i.class == installationTypeOrClass)).forEach((i) => count[i.buildLevel - 1]++)
+    return count
+}
+
 function getAverageLevelOfInstallation (parcelIn, installationTypeOrClass) {
     const installationLevelCount = getInstallationLevelCount(parcelIn, installationTypeOrClass)
     const installationCount = sumArray(installationLevelCount)
@@ -87,6 +93,11 @@ function getAverageLevelOfInstallation (parcelIn, installationTypeOrClass) {
 
 function getIndexOfLowestLevelInstallation(parcelIn, installationType) {
     const lowestLevel = getInstallationLevelCount(parcelIn, installationType).findIndex((level) => level > 0) + 1
+    return findIndexOfFirstInstallationOfTypeAndLevel(parcelIn, installationType, lowestLevel)
+}
+
+function getIndexOfLowestBuildLevelInstallation(parcelIn, installationType) {
+    const lowestLevel = getInstallationBuildLevelCount(parcelIn, installationType).findIndex((buildLevel) => buildLevel > 0) + 1
     return findIndexOfFirstInstallationOfTypeAndLevel(parcelIn, installationType, lowestLevel)
 }
 
@@ -168,5 +179,6 @@ module.exports = {
     getIndexOfHighestLevelInstallation,
     getTotalInstallationsByClass,
     getAverageLevelOfInstallation,
-    getAverageInstallationLevels
+    getAverageInstallationLevels,
+    getIndexOfLowestBuildLevelInstallation
 }
