@@ -16,8 +16,9 @@ All bots play according to the following rules.
 - craft a harvester - choose the most abundant alchemica token in the parcel (relative to the overall token supply)
 - craft and upgrade a single reservoir per alchemica type as needed to ensure a reservoir emptying frequency of 8 hours or less
 - craft and upgrade a maker as needed to allow upgrading of other installations - once a maker has been crafted, the bots' goal is to keep the maker one level ahead of their current simultaneous upgrades so that it never limits their progress
-- bots are considered to have a virtually unlimited bankroll, and they reinvest every penny in their parcel
-- bots are given a single parcel to build on - this is currently a spacious parcel but this is configurable in the simulation
+- bots are considered to have a virtually unlimited bankroll (though it is possible to limit it in the simulation settings), and they reinvest every penny in their parcel
+- bots are given a single parcel to build on - this is currently a spacious parcel but this is configurable in the simulation - the parcel is assumed to get an average VRF roll for its alchemica supply, and does not have any boosts (both of these variables are configurable, however)
+- bots do not spend any GLTR to speed up installation crafting - since the value of GLTR vs alchemica is dynamic, its cost is not able to be assumed it a meaningful way in the simulation
 
 In addition to the rules above, the following strategies are examined in the simulation. The code that runs the bot strategies is contained in the `/strategies` folder of the project.
 
@@ -31,7 +32,7 @@ The upgradooor bot (player 1 in the simulation), seeks to upgrade existing harve
 Rulesets are contained in the `/rulesets` folder of the project. This is where game rules can be modified to examine their impact on the simulation output. The `current.js` ruleset file contains the rules as they currently exist as of bible chapter 4.
 
 ## Results
-Results are output to a .csv file in the `results` folder. These can be imported into a spreadsheet for further charting and analysis. I will try and put PDF's with charts in the folder as well. :)
+Results are output to a timestamped .csv file in the `results` folder named similarly to the simulation script name that generated them. These can be imported into a spreadsheet for further charting and analysis. I will try and put PDF's with charts in the folder as well. :)
 
 **Note**: The reservoir spillover rates have not yet been announced, the simulation uses the same spillover rates as altars.
 
