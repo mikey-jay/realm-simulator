@@ -25,20 +25,13 @@ function getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, toke
     return lowestBuildLevelHarvester.buildLevel || 0
 }
 
-function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm) {
+function getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, token) {
     const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
-    const tokenSupply = verseIn.rules.parcelTokenAllocation
-    let mostAbundantToken = tokensToFarm[0]
-    let fudValueOfMostAbundantToken = 0
-    tokensToFarm.forEach((token) => {
-        const parcelWithOnlyThisToken = pipe(Parcel.create(myParcel.size), [Parcel.addTokens, token, myParcel.tokens[token] || 0])
-        const fudValueOfParcelToken = getWalletValueInFudTerms(parcelWithOnlyThisToken, tokenSupply)
-        if (fudValueOfParcelToken > fudValueOfMostAbundantToken) {
-            mostAbundantToken = token
-            fudValueOfMostAbundantToken = fudValueOfParcelToken
-        }
-    })
-    return mostAbundantToken
+    const lowestBuildLevelHarvesterIndex = Parcel.getIndexOfLowestBuildLevelInstallation(myParcel, `harvester_${token}`)
+    const lowestBuildLevelHarvester = myParcel.installations[lowestBuildLevelHarvesterIndex]
+    if (typeof lowestBuildLevelHarvester == 'undefined')
+        return 0
+    return lowestBuildLevelHarvester.buildLevel
 }
 
 function doesReservoirNeedUpgrade(verseIn, playerIndex, parcelIndex, token) {
