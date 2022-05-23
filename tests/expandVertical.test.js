@@ -9,7 +9,7 @@ const Gotchiverse = require('../entities/gotchiverse.js')
 const { pipe } = require('../utils.js');
 const expandVertical = require('../strategies/expandVertical.js');
 
-test('expandHorizontal - all else equal, choose fud', (t) => {
+test('expandVertical - upgrade before crafting', (t) => {
     const rules = require('../rulesets/testRules.js')
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -19,7 +19,7 @@ test('expandHorizontal - all else equal, choose fud', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(expandVertical(verse, 0, 0).name, 'upgradeLowestLevelFudHarvester', 'upgrade before crafting')
+    t.equals(expandVertical(verse, 0, 0, ['fud']).name, 'upgradeLowestLevelFudHarvester', 'upgrade before crafting')
 
     t.end()
 })
