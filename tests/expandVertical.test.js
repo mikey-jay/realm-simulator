@@ -23,3 +23,20 @@ test('expandHorizontal - all else equal, choose fud', (t) => {
 
     t.end()
 })
+
+test('expandVertical - if cannot upgrade, then craft', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
+    let harvester = pipe(Harvester.create('fud'), Harvester.addLevel)
+    harvester.level = 9
+    harvester.buildLevel = 9
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvester], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[1]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const result = expandVertical(verse, 0, 0, ['fud'])
+    t.equals(result.name, 'craftAndEquipFudHarvester', 'upgrade before crafting')
+
+    t.end()
+})
