@@ -97,7 +97,7 @@ const harvester_fomo = { ...harvesterTemplate,
         { fud: 10500, fomo: 15750, alpha: 0, kek: 1050 }, // L8
         { fud: 10500, fomo: 31500, alpha: 0, kek: 3150 }, // L9
     ],
-    buildTime: [0, 8300, 21000, 42000, 62500, 83000, 165000, 25000, 42000],
+    buildTime: [0, 8300, 21000, 42000, 62500, 83000, 165000, 250000, 420000],
     harvestRates: [7, 13, 26, 46, 65, 98, 130, 195, 260],
     useReservoirType: 'reservoir_fomo'
 }
