@@ -58,6 +58,7 @@ module.exports = {
         alpha: 25 * 10**9 * 0.5,
         kek: 10 * 10**9 * 0.5
     },
+    surveyingRoundBlocks,
     surveyingRoundStartTimes: [
         0,
         surveyingRoundBlocks,
