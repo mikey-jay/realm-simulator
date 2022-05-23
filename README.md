@@ -20,6 +20,7 @@ All bots play according to the following rules.
 - bots are given a single parcel to build on - this is currently a spacious parcel but this is configurable in the simulation - the parcel is assumed to get an average VRF roll for its alchemica supply, and does not have any boosts (both of these variables are configurable, however)
 - bots do not spend any GLTR to speed up installation crafting - since the value of GLTR vs alchemica is dynamic, its cost is not able to be assumed it a meaningful way in the simulation
 - bots do not collect any spillover - all spillover from reservoirs is assumed lost
+- bots stop crafting and upgrading harvesters if they exceed their desired maximum harvest rate. This rate is calculated by taking the total amount of alchemica they would get from the act I, round 1 survey, and dividing it by the length of that round. Since this first round has the highest distribution of alchemica, the bots ensure they have a high enough rate to be able to harvest their alchemica in a timely fashion.
 
 In addition to the rules above, the following strategies are examined in the simulation. The code that runs the bot strategies is contained in the `/strategies` folder of the project.
 
