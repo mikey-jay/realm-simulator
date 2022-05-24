@@ -67,7 +67,8 @@ const maker = { ...installationTemplate,
         'spacious': 1,
         'partner': 1
     },
-    concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+    concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ],
+    harvesterQtyIncreases: [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 }
 const harvester_fud = { ...harvesterTemplate,
     buildCosts: [
