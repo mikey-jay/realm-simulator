@@ -25,11 +25,11 @@ const formatResult = (resultIn) => {
     const averageAltarLevel = resultIn.parcelTotals.averageLevels.altar
     const totalMakers = resultIn.parcelTotals.installationClasses.maker
     const averageMakerLevel = resultIn.parcelTotals.averageLevels.maker
-
+    const destroyValueFudTerms = getWalletValueInFudTerms({ tokens: resultIn.parcelTotals.destroyValue }, tokenSupply)
 
     const resultOut = { blockTimeRounded, days, playerIndex, parcelIndex, playerTotalFudTerms,
         playerChangeFudTerms, parcelTotalFudTerms, parcelChangeFudTerms, totalHarvesters, averageHarvesterLevel,
-        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, ...structuredClone(resultIn) }
+        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, ...structuredClone(resultIn) }
     
     return resultOut
 }
@@ -37,7 +37,7 @@ const formatResult = (resultIn) => {
 const startingAlchemica = rules.avgBaseAlchemicaPerParcel.spacious
 const horizontalBot = pipe(Bot.create('expandHorizontal'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
 const verticalBot = pipe(Bot.create('expandVertical'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const sim = pipe(Simulation.create('harvesterRecipeB', 8,365 * 2), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
+const sim = pipe(Simulation.create('harvesterRecipeB', 8, 365 * 2.5), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
 const { Parser, transforms: { unwind, flatten } } = require('json2csv');
 const json2csvParser = new Parser({ transforms: [flatten({separator: '.', objects: true, arrays: true})] });
 const formattedResults = sim.results.map(formatResult)
@@ -54,6 +54,5 @@ console.log(`Simulation complete. Results written to ${fullPathResultFile}`)
  * TODO:
  * - track and output recoup value of installations
  * - players destroy installations when all alchemica is exhausted
- * - write rules for increasing returns of harvester level
  * - write rules and logic for limiting # of harvesters by maker level
  */

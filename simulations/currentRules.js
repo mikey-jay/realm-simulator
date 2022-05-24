@@ -25,11 +25,11 @@ const formatResult = (resultIn) => {
     const averageAltarLevel = resultIn.parcelTotals.averageLevels.altar
     const totalMakers = resultIn.parcelTotals.installationClasses.maker
     const averageMakerLevel = resultIn.parcelTotals.averageLevels.maker
-
+    const destroyValueFudTerms = getWalletValueInFudTerms({ tokens: resultIn.parcelTotals.destroyValue }, tokenSupply)
 
     const resultOut = { blockTimeRounded, days, playerIndex, parcelIndex, playerTotalFudTerms,
         playerChangeFudTerms, parcelTotalFudTerms, parcelChangeFudTerms, totalHarvesters, averageHarvesterLevel,
-        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, ...structuredClone(resultIn) }
+        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, ...structuredClone(resultIn) }
     
     return resultOut
 }
@@ -37,7 +37,7 @@ const formatResult = (resultIn) => {
 const startingAlchemica = rules.avgBaseAlchemicaPerParcel.spacious
 const horizontalBot = pipe(Bot.create('expandHorizontal'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
 const verticalBot = pipe(Bot.create('expandVertical'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const sim = pipe(Simulation.create('current', 8), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
+const sim = pipe(Simulation.create('current', 8, 30), [Simulation.addBot, horizontalBot], [Simulation.addBot, verticalBot], runSimulation)
 const { Parser, transforms: { unwind, flatten } } = require('json2csv');
 const json2csvParser = new Parser({ transforms: [flatten({separator: '.', objects: true, arrays: true})] });
 const formattedResults = sim.results.map(formatResult)
@@ -48,3 +48,11 @@ const scriptName = path.basename(__filename)
 const fullPathResultFile = `${__dirname}/../results/${scriptName}-result-${Date.now()}.csv`
 fs.writeFile(fullPathResultFile, csv, (err) => { if (err) return console.log(err) })
 console.log(`Simulation complete. Results written to ${fullPathResultFile}`)
+
+
+/**
+ * TODO:
+ * - look at upgradooor maxing harvesters and makers at L8
+ * - track and output recoup value of installations
+ * - players destroy installations when all alchemica is exhausted
+ */

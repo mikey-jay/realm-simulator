@@ -2,7 +2,7 @@ const Simulation = require("../entities/simulation.js")
 const Result = require("../entities/result.js")
 const {passTime} = require('./passTime.js')
 const { emptyParcelReservoirs } = require('./emptyReservoirs.js')
-
+const { getDestroyValueOfAllInstallations } = require('./destroyInstallation.js')
 
 function continueSimulation(simulationIn) {
     let simulationOut = structuredClone(simulationIn)
@@ -28,6 +28,7 @@ function runUseCase(simulationIn, useCase, playerIndex, parcelIndex) {
     const beforeStrategyResult = Result.create(simulationIn.gotchiverse, playerIndex, parcelIndex, simulationIn.results[simulationIn.results.length - 1] || { playerTotals: {}, parcelTotals: {} })
     simulationOut.gotchiverse = useCase(simulationOut.gotchiverse, playerIndex, parcelIndex)
     const afterStrategyResult = Result.create(simulationOut.gotchiverse, playerIndex, parcelIndex, useCase.name, beforeStrategyResult)
+    afterStrategyResult.parcelTotals.destroyValue = getDestroyValueOfAllInstallations(simulationIn.gotchiverse, playerIndex, parcelIndex)
     simulationOut = Simulation.addResult(simulationOut, afterStrategyResult)
     return simulationOut
 }

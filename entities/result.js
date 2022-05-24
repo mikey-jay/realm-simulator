@@ -12,7 +12,8 @@ function create(gotchiverse, playerIndex, parcelIndex, useCaseName = '', lastRes
         tokens: structuredClone(gotchiverse.players[playerIndex].parcels[parcelIndex].tokens),
         installations: Parcel.getTotalInstallations(gotchiverse.players[playerIndex].parcels[parcelIndex]),
         installationClasses: Parcel.getTotalInstallationsByClass(gotchiverse.players[playerIndex].parcels[parcelIndex]),
-        averageLevels: Parcel.getAverageInstallationLevels(gotchiverse.players[playerIndex].parcels[parcelIndex])     
+        averageLevels: Parcel.getAverageInstallationLevels(gotchiverse.players[playerIndex].parcels[parcelIndex]),
+        destroyValue: 0     
     }
     const playerChange = subtractObjectKeys(playerTotals, lastResult.playerTotals)
     const parcelChange = subtractObjectKeys(parcelTotals, lastResult.parcelTotals)
