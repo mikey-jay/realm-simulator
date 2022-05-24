@@ -40,11 +40,3 @@ const csv = json2csvParser.parse(formattedResults);
 const fullPathResultFile = `${__dirname}/results/${simulationName}-result-${Date.now()}.csv`
 fs.writeFile(fullPathResultFile, csv, (err) => { if (err) return console.log(err) })
 console.log(`Simulation complete. Results written to ${fullPathResultFile}`)
-
-
-/**
- * TODO:
- * - look at upgradooor maxing harvesters and makers at L8
- * - track and output recoup value of installations
- * - players destroy installations when all alchemica is exhausted
- */
