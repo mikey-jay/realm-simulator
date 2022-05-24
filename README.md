@@ -41,4 +41,4 @@ Results are output to a timestamped .csv file in the `results` folder named simi
 # Installing the Script
 I am assuming you already have [Node.js](https://nodejs.org/en/) installed. The script was developed and tested with v17.4.0. To install, run the following from the root directory of the project: `npm install`
 
-To run the script, run the `app.js` script in the project root, or use `npm start`.
+To run the script, run the `app.js` script in the project root, or use `npm start`. This will run the default simulation, with the current ruleset. To run another simulation use `node app.js <simulation name>` where the simulation name is the name of the file in the `simulations` project folder without the .js extension. (ie: currentRules)
