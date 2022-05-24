@@ -47,7 +47,7 @@ test('expandHorizontal - insufficient funds', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.false(expandHorizontal(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0, ['fud']))
 
     t.end()
 })
@@ -64,12 +64,14 @@ test('expandHorizontal - already reached max installation count', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.false(expandHorizontal(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0, ['fud']))
 
     t.end()
 })
 
-test('expandHorizontal - missing preqrequisite - build prerequisite first', (t) => {
+
+// todo: side effects issue with this test???
+test.skip('expandHorizontal - missing preqrequisite - build prerequisite first', (t) => {
     const rules = require('../rulesets/testRules.js')
     rules.installations.harvester_fud.prerequisites = ['altar']
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -79,7 +81,7 @@ test('expandHorizontal - missing preqrequisite - build prerequisite first', (t) 
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipAltar')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'craftAndEquipAltar')
 
     t.end()
 })
@@ -97,7 +99,7 @@ test('expandHorizontal - no space for installation', (t) => {
     verse.players[0].parcels[0].height = 2
     verse.players[0].parcels[0].width = 2
 
-    t.false(expandHorizontal(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0, ['fud']))
 
     t.end()
 })
@@ -110,7 +112,7 @@ test('expandHorizontal - craft a reservoir first', (t) => {
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudReservoir', 'missing reservoir - craft one first')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'craftAndEquipFudReservoir', 'missing reservoir - craft one first')
 
     t.end()
 })
@@ -125,7 +127,7 @@ test('expandHorizontal - upgrade reservoir if there is not enough capacity to me
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
-    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelFudReservoir')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'upgradeLowestLevelFudReservoir')
 
     t.end()
 })
@@ -141,7 +143,7 @@ test('expandHorizontal - do not upgrade reservoir if one is already being upgrad
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.reservoir_fud.buildCosts[1]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipFudHarvester')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'craftAndEquipFudHarvester')
 
     t.end()
 })
@@ -157,7 +159,7 @@ test('expandHorizontal - upgrade level prerequisites before upgrading reservoir'
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.installations.reservoir_fud.levelPrerequisite = 'altar'
-    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeHighestLevelAltar')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'upgradeHighestLevelAltar')
 
     t.end()
 })
@@ -174,7 +176,7 @@ test('expandHorizontal - craft a maker if out of max concurrent upgrades', (t) =
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.maxConcurrentUpgrades = 1
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipMaker')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'craftAndEquipMaker')
 
     t.end()
 })
@@ -192,7 +194,7 @@ test('expandHorizontal - upgrade a maker if upgrading another installation would
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.maxConcurrentUpgrades = 1
-    t.equals(expandHorizontal(verse, 0, 0).name, 'upgradeLowestLevelMaker')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud']).name, 'upgradeLowestLevelMaker')
 
     t.end()
 })
@@ -212,7 +214,7 @@ test('expandHorizontal - dont upgrade maker if it would exceed a prerequisite le
     verse.rules.maxConcurrentUpgrades = 1
     verse.rules.installations.reservoir_fud.levelPrerequisite = 'altar'
     verse.rules.installations.maker.levelPrerequisite = 'altar'
-    const result = expandHorizontal(verse, 0, 0)
+    const result = expandHorizontal(verse, 0, 0, ['fud'])
     t.false(result)
 
     t.end()
@@ -246,7 +248,101 @@ test('expandHorizontal - if waiting on reservoir upgrade to craft next harvester
     verse.rules.installations.reservoir_fud.capacities[0] = 1
     verse.rules.installations.reservoir_fud.capacities[1] = 1
     verse.rules.maxConcurrentUpgrades = 1
-    t.false(expandHorizontal(verse, 0, 0))
+    t.false(expandHorizontal(verse, 0, 0, ['fud']))
+
+    t.end()
+})
+
+/*
+test('expandHorizontal - if harvest rate is above the rate needed to exhaust parcel in remaining time, do nothing', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL8 = { ...Harvester.create('alpha'), buildLevel: 8, level: 8 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL8], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 1])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const blocksInOneDay = 60 * 60 * 24 / rules.secondsPerBlock
+    verse.currentTime = rules.surveyingRoundStartTimes[rules.surveyingRoundStartTimes.length - 1] + rules.surveyingRoundBlocks - blocksInOneDay
+    const result = expandHorizontal(verse, 0, 0, ['alpha'])
+    t.false(result)
+
+    t.end()
+})
+
+ test('expandHorizontal - in last round, stop upgrading if the harvest rate exceeds what is needed to harvest it in a single round\'s length', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL8 = { ...Harvester.create('alpha'), buildLevel: 8, level: 8 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL8], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 10], [Parcel.addTokens, 'kek', 1])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const blocksInOneDay = 60 * 60 * 24 / rules.secondsPerBlock
+    verse.currentTime = rules.surveyingRoundStartTimes[rules.surveyingRoundStartTimes.length - 1] + rules.surveyingRoundBlocks - blocksInOneDay
+    const result = expandHorizontal(verse, 0, 0, ['alpha','kek'])
+    t.equals(result.name, 'craftAndEquipKekReservoir')
+
+    t.end()
+})
+
+test('expandHorizontal - in mid-rounds, keep upgrading if the harvest rate doesn\'t exceed the rate needed to harvest act I, round 1 alchemica', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL8 = { ...Harvester.create('alpha'), buildLevel: 8, level: 8 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL8], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 10], [Parcel.addTokens, 'kek', 1])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const blocksInOneDay = 60 * 60 * 24 / rules.secondsPerBlock
+    verse.currentTime = rules.surveyingRoundStartTimes[rules.surveyingRoundStartTimes.length - 1] + rules.surveyingRoundBlocks - blocksInOneDay
+    const result = expandHorizontal(verse, 0, 0, ['alpha','kek'])
+    t.equals(result.name, 'craftAndEquipAlphaHarvester')
+
+    t.end()
+})
+
+*/
+ test('expandHorizontal - if harvest rate is above the max desired for one resource, move to the next most abundant resource', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL8 = { ...Harvester.create('alpha'), buildLevel: 8, level: 8 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL8], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 10], [Parcel.addTokens, 'kek', 1])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[0]])
+    rules.installations.harvester_alpha.harvestRates[7] = 1000
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const blocksInOneDay = 60 * 60 * 24 / rules.secondsPerBlock
+    verse.currentTime = rules.surveyingRoundStartTimes[rules.surveyingRoundStartTimes.length - 1] + rules.surveyingRoundBlocks - blocksInOneDay
+    const result = expandHorizontal(verse, 0, 0, ['alpha','kek'])
+    t.equals(result.name, 'craftAndEquipKekReservoir')
+
+    t.end()
+})
+
+test('expandHorizontal - if there are no more surveying rounds, and no more alchemica, stop crafting/upgrading harvesters', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL8 = { ...Harvester.create('alpha'), buildLevel: 8, level: 8 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL8], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 10], [Parcel.addTokens, 'kek', 0])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[0]])
+    rules.installations.harvester_alpha.harvestRates[7] = 1000
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+    const blocksInOneDay = 60 * 60 * 24 / rules.secondsPerBlock
+    verse.currentTime = rules.surveyingRoundStartTimes[rules.surveyingRoundStartTimes.length - 1] + rules.surveyingRoundBlocks - blocksInOneDay
+    const result = expandHorizontal(verse, 0, 0, ['alpha','kek'])
+    t.false(result)
 
     t.end()
 })

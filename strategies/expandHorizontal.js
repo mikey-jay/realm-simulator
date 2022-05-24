@@ -4,25 +4,60 @@ const Installation = require('../entities/installation.js')
 const { craftAndEquipFudHarvester, hasReachedMaxOfType, hasReachedMaxOfClass, getMissingPrerequisiteTypes, craftAndEquipAltar, craftAndEquipMaker, craftAndEquipFomoHarvester, craftAndEquipAlphaHarvester, craftAndEquipKekHarvester, craftAndEquipFudReservoir, craftAndEquipFomoReservoir, craftAndEquipAlphaReservoir, craftAndEquipKekReservoir } = require('../use_cases/craftAndEquip.js')
 const { addObjectKeys, pipe } = require('../utils.js')
 const { upgradeLowestLevelAltar, upgradeLowestLevelMaker, upgradeLowestLevelFudHarvester, upgradeLowestLevelFomoHarvester, upgradeLowestLevelAlphaHarvester, upgradeLowestLevelKekHarvester, upgradeLowestLevelFudReservoir, upgradeLowestLevelFomoReservoir, upgradeLowestLevelAlphaReservoir, upgradeLowestLevelKekReservoir, upgradeHighestLevelAltar, upgradeHighestLevelMaker, upgradeHighestLevelFudHarvester, upgradeHighestLevelFomoHarvester, upgradeHighestLevelAlphaHarvester, upgradeHighestLevelKekHarvester, upgradeHighestLevelFudReservoir, upgradeHighestLevelFomoReservoir, upgradeHighestLevelAlphaReservoir, upgradeHighestLevelKekReservoir, getMaxConcurrentUpgradeLimit } = require('../use_cases/craftUpgrade.js')
-const { getWalletValueInFudTerms } = require('../use_cases/getWalletValueInFudTerms.js')
+const { getParcelTokensInOrderOfAbundance } = require('../use_cases/getParcelTokensInOrderOfAbundance.js')
+const { getIndexOfHighestLevelInstallation, getIndexOfLowestLevelInstallation } = require('../entities/parcel.js')
 
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false) => {
-    const mostAbundantToken = getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensToFarm)
-    const args = [verseIn, playerIndex, parcelIndex, mostAbundantToken]
+    const tokensInOrderOfAbundance = getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm)
+    for (let i = 0 ; i < tokensInOrderOfAbundance.length ; i++) {
+        const craftStrategy = craftOrUpgradeHarvestersOfToken(verseIn, playerIndex, parcelIndex, tokensInOrderOfAbundance[i], upgradeHarvestersBeforeCraftingMore)
+        if (craftStrategy)
+            return craftStrategy
+    }
+    return false
+}
+
+function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tokenToFarm, upgradeHarvestersBeforeCraftingMore = false) {
+    const args = [verseIn, playerIndex, parcelIndex, tokenToFarm]
     const canCraftAHarvester = !hasReachedMaxOfClass(verseIn, playerIndex, parcelIndex, 'harvester')
-    const canUpgradeAHarvester =
-        getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, mostAbundantToken) < verseIn.rules.installations[`harvester_${mostAbundantToken}`].maxLevel
-        && Parcel.getInstallationTypeCount(verseIn.players[playerIndex].parcels[parcelIndex], `harvester_${mostAbundantToken}`)
+    const maxDesiredHarvestRate = getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, tokenToFarm)
+    const currentHarvestRate = getTotalHarvestRates(verseIn, playerIndex, parcelIndex)[tokenToFarm]
+    const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
+    if (isLastRound(verseIn) && Parcel.getTokenBalance(myParcel, tokenToFarm) <= 0)
+        return false
+    if (currentHarvestRate >= maxDesiredHarvestRate)
+        return false
+    const allHarvestersAreAtMaxLevel = getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, tokenToFarm) >= verseIn.rules.installations[`harvester_${tokenToFarm}`].maxLevel
+    const hasAHarvester = Parcel.getInstallationTypeCount(verseIn.players[playerIndex].parcels[parcelIndex], `harvester_${tokenToFarm}`) > 0
+    const canUpgradeAHarvester = hasAHarvester && !allHarvestersAreAtMaxLevel
     if (upgradeHarvestersBeforeCraftingMore) {
         return canUpgradeAHarvester ? upgradeLowestLevelHarvesterOfType(...args) : craftHarvestersOfType(...args)
     }
-    return canCraftAHarvester ? craftHarvestersOfType(...args) : upgradeLowestLevelHarvesterOfType(...args) 
+    return canCraftAHarvester ? craftHarvestersOfType(...args) : upgradeLowestLevelHarvesterOfType(...args)
 }
 
-function getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, token) {
-    const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
-    const lowestBuildLevelHarvester = Parcel.getIndexOfLowestBuildLevelInstallation(myParcel, `harvester_${token}`)
-    return lowestBuildLevelHarvester.buildLevel || 0
+function isLastRound(verseIn) {
+    return verseIn.rules.surveyingRoundStartTimes.filter((time) => time > verseIn.currentTime).length == 0
+}
+
+function getBlocksRemainingInGame(verseIn) {
+    const gameLengthInBlocks = verseIn.rules.surveyingRoundStartTimes[verseIn.rules.surveyingRoundStartTimes.length - 1] + verseIn.rules.surveyingRoundBlocks
+    return gameLengthInBlocks - verseIn.currentTime
+}
+
+function getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, token) {
+    /*
+    const blocksRemaining = getBlocksRemainingInGame(verseIn)
+    const daysRemaining = blocksRemaining * verseIn.rules.secondsPerBlock / 60 / 60 / 24
+    const parcelTokenBalance = verseIn.players[playerIndex].parcels[parcelIndex].tokens[token]
+    if (parcelTokenBalance > 0 && daysRemaining > 0) {
+        return parcelTokenBalance / daysRemaining
+    }
+    return 0*/
+    const lengthOfRoundOneInDays = verseIn.rules.surveyingRoundStartTimes[1] * verseIn.rules.secondsPerBlock / 60 / 60 / 24
+    const roundOneAlchemicaQty = verseIn.rules.avgBaseAlchemicaPerParcel[verseIn.players[playerIndex].parcels[parcelIndex].size][token] * verseIn.rules.surveyingRoundDistributionRates[0]
+    const maxDesiredHarvestRate = (roundOneAlchemicaQty || 0) / lengthOfRoundOneInDays
+    return maxDesiredHarvestRate
 }
 
 function getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, token) {
@@ -107,8 +142,7 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
     const me = gotchiverseIn.players[playerIndex]
     const myParcel = me.parcels[parcelIndex]
 
-    const installationToUpgrade = myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, installationType)]
-    
+    const installationToUpgrade = upgradeLowest ? myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, installationType)] : myParcel.installations[Parcel.getIndexOfHighestLevelInstallation(myParcel, installationType)]
     if (typeof installationToUpgrade == 'undefined')
         return false
 
@@ -127,8 +161,11 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
         const limiter = myParcel.installations[Parcel.getIndexOfHighestLevelInstallation(myParcel, levelPrerequisite)]
         if (typeof limiter == 'undefined')
             return craftNewInstallation(gotchiverseIn, playerIndex, parcelIndex, levelPrerequisite)
-        if (limiter.level <= installationToUpgrade.level)
+        if (limiter.level <= installationToUpgrade.level) {
+            if (installationType == 'maker') // can't upgrade another installation if we're already trying to upgrade a maker - would create circular logic
+                return false
             return upgradeHighestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, levelPrerequisite)
+        }
     }
 
     let concurrentUpgrades = Parcel.getCurrentUpgradeCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex])
