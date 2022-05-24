@@ -131,7 +131,7 @@ module.exports = {
         harvester_fomo: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_fomo'},
         harvester_alpha: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_alpha'},
         harvester_kek: {...structuredClone(harvesterTemplate), useReservoirType: 'reservoir_kek'},
-        maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ], class: 'maker'}
+        maker: {...structuredClone(installationTemplate), concurrentUpgradeIncreases: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ], harvesterQtyIncreases: [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ], class: 'maker'}
     },
     maxQuantityPerInstallationClass: {
         harvester: {

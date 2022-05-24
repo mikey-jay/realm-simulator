@@ -19,7 +19,7 @@ module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fom
 
 function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tokenToFarm, upgradeHarvestersBeforeCraftingMore = false) {
     const args = [verseIn, playerIndex, parcelIndex, tokenToFarm]
-    const canCraftAHarvester = !hasReachedMaxOfClass(verseIn, playerIndex, parcelIndex, 'harvester')
+    const canCraftAHarvester = !hasReachedMaxOfClass(verseIn, playerIndex, parcelIndex, 'harvester') && !(hasReachedMaxOfType(verseIn, playerIndex, parcelIndex, `harvester_${tokenToFarm}`) && !doesUpgradingMakerIncreaseHarvesterLimit(verseIn, playerIndex, parcelIndex, tokenToFarm))
     const maxDesiredHarvestRate = getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, tokenToFarm)
     const currentHarvestRate = getTotalHarvestRates(verseIn, playerIndex, parcelIndex)[tokenToFarm]
     const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
@@ -34,6 +34,18 @@ function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tok
         return canUpgradeAHarvester ? upgradeLowestLevelHarvesterOfType(...args) : craftHarvestersOfType(...args)
     }
     return canCraftAHarvester ? craftHarvestersOfType(...args) : upgradeLowestLevelHarvesterOfType(...args)
+}
+
+function doesUpgradingMakerIncreaseHarvesterLimit (verseIn, playerIndex, parcelIndex, tokenToFarm) {
+    const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
+    const makerIndex = Parcel.getIndexOfHighestLevelInstallation(myParcel, 'maker')
+    const myMaker = myParcel.installations[makerIndex]
+    const harvesterQtyIncreases = verseIn.rules.installations.maker.harvesterQtyIncreases
+    let makerLevel = 0
+    if (typeof myMaker != 'undefined')
+        makerLevel = myMaker.level
+    const remainingQtyIncreases = Math.max(...harvesterQtyIncreases.slice(makerLevel))
+    return remainingQtyIncreases > 0
 }
 
 function isLastRound(verseIn) {
@@ -101,6 +113,10 @@ function craftHarvestersOfType(verseIn, playerIndex, parcelIndex, tokenToFarm) {
 
     if (doesReservoirNeedUpgrade(verseIn, playerIndex, parcelIndex, tokenToFarm))
         return upgradeLowestLevelInstallation(verseIn, playerIndex, parcelIndex, reservoirType)
+    
+    if (hasReachedMaxOfType(verseIn, playerIndex, parcelIndex, `harvester_${tokenToFarm}`) && doesUpgradingMakerIncreaseHarvesterLimit(verseIn, playerIndex, parcelIndex, tokenToFarm)) {
+        return craftNewInstallation(verseIn, playerIndex, parcelIndex, 'maker') || upgradeHighestLevelInstallation(verseIn, playerIndex, parcelIndex, 'maker')
+    }
 
     return craftNewInstallation(verseIn, playerIndex, parcelIndex, harvesterType)
 }
