@@ -162,8 +162,6 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
         if (typeof limiter == 'undefined')
             return craftNewInstallation(gotchiverseIn, playerIndex, parcelIndex, levelPrerequisite)
         if (limiter.level <= installationToUpgrade.level) {
-            if (installationType == 'maker') // can't upgrade another installation if we're already trying to upgrade a maker - would create circular logic
-                return false
             return upgradeHighestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, levelPrerequisite)
         }
     }
@@ -175,7 +173,8 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
     if (concurrentUpgrades >= maxConcurrentUpgradeLimit)
         return canCraftAMaker ? craftAndEquipMaker : false
 
-    if (installationType != 'maker') {
+    // don't upgrade the maker if the installation we're currently upgrading is the maker, or its level prerequisite (altar)
+    if (installationType != 'maker' && installationType != gotchiverseIn.rules.installations.maker.levelPrerequisite) {
         const lowestLevelMaker = myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, 'maker')]
 
         if (!canCraftAMaker && (typeof lowestLevelMaker != 'undefined') && concurrentUpgrades >= maxConcurrentUpgradeLimit - 1) {
