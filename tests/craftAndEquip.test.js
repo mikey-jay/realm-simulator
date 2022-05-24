@@ -1,6 +1,7 @@
 const test = require('tape');
 const { craftAndEquipInstallation, craftAndEquipFudHarvester } = require('../use_cases/craftAndEquip.js')
 const Harvester = require('../entities/harvester.js')
+const Maker = require('../entities/maker.js')
 const Parcel = require('../entities/parcel.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
@@ -116,5 +117,26 @@ test('craftAndEquipInstallation - max quantities per class', (t) => {
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, qualifiedPlayer])
     t.throws(() => craftAndEquipFudHarvester(verse, 0, 0), 'cannot craft more than max for this class')
     
+    t.end();
+});
+
+test('craftAndEquipInstallation - max quantities of harvester per maker level', (t) => {
+    const rules = require('../rulesets/testRules.js')
+
+    rules.maxQuantityPerInstallationClass['harvester'].humble = undefined
+    rules.installations['harvester_fud'].prerequisites = []
+    rules.installations['harvester_fud'].maxQuantityPerParcel.humble = 2
+    rules.installations.maker.harvesterQtyIncreases = [1,2,3,4,5,6,7,8,9]
+    const humbleParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, Harvester.create('fud')], [Parcel.addInstallation, Harvester.create('fud')])
+    let player1 = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations['harvester_fud'].buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, player1])
+    t.throws(() => craftAndEquipFudHarvester(verse, 0, 0), 'throws if there is no maker')
+
+    const makerL1 = pipe(Maker.create(), Maker.addLevel)
+    const humbleParcelWithMaker = pipe(Parcel.create('humble'), [Parcel.addInstallation, makerL1], [Parcel.addInstallation, Harvester.create('fud')], [Parcel.addInstallation, Harvester.create('fud')])
+    const player2 = pipe(Player.create(), [Player.addParcel, humbleParcelWithMaker], [Player.addTokens, rules.installations['harvester_fud'].buildCosts[0]])
+    let verse2 = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, player2])
+    t.doesNotThrow(() => craftAndEquipFudHarvester(verse2, 0, 0), 'does not throw if there is a maker')
+
     t.end();
 });

@@ -56,7 +56,12 @@ function craftAndEquipMaker(gotchiverseIn, playerIndex, parcelIndex) {
 function hasReachedMaxOfType (gotchiverseIn, playerIndex, parcelIndex, installationType) {
     let parcelSize = gotchiverseIn.players[playerIndex].parcels[parcelIndex].size
     let maxInstallationsAllowed = gotchiverseIn.rules.installations[installationType].maxQuantityPerParcel[parcelSize]
-
+    if (gotchiverseIn.rules.installations[installationType].class == 'harvester') {
+        const highestLevelMakerIndex = Parcel.getIndexOfHighestLevelInstallation(gotchiverseIn.players[playerIndex].parcels[parcelIndex], 'maker')
+        const highestLevelMaker = gotchiverseIn.players[playerIndex].parcels[parcelIndex].installations[highestLevelMakerIndex]
+        if (typeof highestLevelMaker != 'undefined' && highestLevelMaker.level > 0)
+            maxInstallationsAllowed += gotchiverseIn.rules.installations.maker.harvesterQtyIncreases[highestLevelMaker.level - 1] || 0
+    }
     return ((typeof maxInstallationsAllowed != 'undefined') && Parcel.getInstallationTypeCount(gotchiverseIn.players[playerIndex].parcels[parcelIndex], installationType) >= maxInstallationsAllowed)
 }
 

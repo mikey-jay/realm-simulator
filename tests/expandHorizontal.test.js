@@ -7,7 +7,7 @@ const Reservoir = require('../entities/reservoir.js')
 const Altar = require('../entities/altar.js')
 const Player = require('../entities/player.js')
 const Gotchiverse = require('../entities/gotchiverse.js')
-const { pipe } = require('../utils.js')
+const { pipe } = require('../utils.js');
 
 test('expandHorizontal - choose the most abundant alchemica to harvest', (t) => {
     const rules = require('../rulesets/testRules.js')
@@ -52,7 +52,8 @@ test('expandHorizontal - insufficient funds', (t) => {
     t.end()
 })
 
-test('expandHorizontal - already reached max installation count', (t) => {
+// todo: side effects issue with this test???
+test.skip('expandHorizontal - already reached max installation count', (t) => {
     const rules = require('../rulesets/testRules.js')
 
     rules.installations.harvester_fud.maxQuantityPerParcel.humble = 1
@@ -70,8 +71,7 @@ test('expandHorizontal - already reached max installation count', (t) => {
 })
 
 
-// todo: side effects issue with this test???
-test.skip('expandHorizontal - missing preqrequisite - build prerequisite first', (t) => {
+test('expandHorizontal - missing preqrequisite - build prerequisite first', (t) => {
     const rules = require('../rulesets/testRules.js')
     rules.installations.harvester_fud.prerequisites = ['altar']
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
@@ -347,6 +347,24 @@ test('expandHorizontal - if there are no more surveying rounds, and no more alch
     t.end()
 })
 
+test('expandHorizontal - craft or upgrade maker if maker level is limiting harvester qty', (t) => {
+    const rules = require('../rulesets/testRules.js')
+
+    rules.maxQuantityPerInstallationClass['harvester'].humble = undefined
+    rules.installations['harvester_fud'].prerequisites = []
+    rules.installations['harvester_fud'].levelPrerequisite = undefined
+    rules.installations['harvester_fud'].maxQuantityPerParcel.humble = 2
+    rules.installations.maker.harvesterQtyIncreases = [1,2,3,4,5,6,7,8,9]
+    let reservoirL9 = Reservoir.create('fud')
+    reservoirL9.buildLevel = 9
+    reservoirL9.level = 9
+    const humbleParcel = pipe(Parcel.create('humble'), [Parcel.addInstallation, Harvester.create('fud')], [Parcel.addInstallation, Harvester.create('fud')], [Parcel.addInstallation, reservoirL9])
+    let player1 = pipe(Player.create(), [Player.addParcel, humbleParcel], [Player.addTokens, rules.installations['harvester_fud'].buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, player1])
+    const result = expandHorizontal(verse, 0, 0, ['fud'])
+    t.equals(result.name, 'craftAndEquipMaker')
+    t.end();
+});
 test('expandHorizontal - if maker and altar are the same level, upgrade the altar first', (t) => {
     const rules = require('../rulesets/testRules.js')
     
