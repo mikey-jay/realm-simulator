@@ -196,7 +196,7 @@ const reservoir_kek = { ...reservoirTemplate,
 
 const secondsPerBlock = 2.3 // as per polygon
 const surveyingActBlocks = 60 / secondsPerBlock * 60 * 24 * 365 * 2 // 2 years
-const surveyingRoundBlocks = surveyingActBlocks / 4 // 4 rounds per act
+const surveyingRoundBlocks = surveyingActBlocks / 10 // 10 rounds of alchemica distribution per act
 
 module.exports = {
     maxReservoirEmptiesPerDay: 3,
@@ -220,22 +220,18 @@ module.exports = {
         surveyingRoundBlocks * 7,
         surveyingRoundBlocks * 8,
         surveyingRoundBlocks * 9,
-        surveyingRoundBlocks * 10,
-        surveyingRoundBlocks * 11
     ],
     surveyingRoundDistributionRates: [
-        0.5 / 4,
-        0.5 / 4,
-        0.5 / 4,
-        0.5 / 4,
-        0.3 / 4,
-        0.3 / 4,
-        0.3 / 4,
-        0.3 / 4,
-        0.2 / 4,
-        0.2 / 4,
-        0.2 / 4,
-        0.2 / 4
+        0.25,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
+        0.75 / 9,
     ],
     avgBaseAlchemicaPerParcel: {
         humble: {
