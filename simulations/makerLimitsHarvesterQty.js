@@ -4,7 +4,7 @@ const Parcel = require('../entities/parcel.js')
 const Bot = require('../entities/bot.js')
 const { pipe } = require('../utils.js')
 
-const rulesetName = 'makerLimitsHarvestQty'
+const rulesetName = 'makerLimitsHarvesterQty'
 const rules = require(`../rulesets/${rulesetName}.js`)
 
 const startingAlchemica = rules.avgBaseAlchemicaPerParcel.spacious
