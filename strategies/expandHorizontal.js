@@ -7,17 +7,17 @@ const { upgradeLowestLevelAltar, upgradeLowestLevelMaker, upgradeLowestLevelFudH
 const { getParcelTokensInOrderOfAbundance } = require('../use_cases/getParcelTokensInOrderOfAbundance.js')
 const { getIndexOfHighestLevelInstallation, getIndexOfLowestLevelInstallation } = require('../entities/parcel.js')
 
-module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false) => {
+module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false, maxLevelOfHarvesters = 9) => {
     const tokensInOrderOfAbundance = getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm)
     for (let i = 0 ; i < tokensInOrderOfAbundance.length ; i++) {
-        const craftStrategy = craftOrUpgradeHarvestersOfToken(verseIn, playerIndex, parcelIndex, tokensInOrderOfAbundance[i], upgradeHarvestersBeforeCraftingMore)
+        const craftStrategy = craftOrUpgradeHarvestersOfToken(verseIn, playerIndex, parcelIndex, tokensInOrderOfAbundance[i], upgradeHarvestersBeforeCraftingMore, maxLevelOfHarvesters)
         if (craftStrategy)
             return craftStrategy
     }
     return false
 }
 
-function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tokenToFarm, upgradeHarvestersBeforeCraftingMore = false) {
+function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tokenToFarm, upgradeHarvestersBeforeCraftingMore = false, maxLevelOfHarvesters = 9) {
     const args = [verseIn, playerIndex, parcelIndex, tokenToFarm]
     const canCraftAHarvester = !hasReachedMaxOfClass(verseIn, playerIndex, parcelIndex, 'harvester') && !(hasReachedMaxOfType(verseIn, playerIndex, parcelIndex, `harvester_${tokenToFarm}`) && !doesUpgradingMakerIncreaseHarvesterLimit(verseIn, playerIndex, parcelIndex, tokenToFarm))
     const maxDesiredHarvestRate = getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, tokenToFarm)
@@ -27,13 +27,16 @@ function craftOrUpgradeHarvestersOfToken (verseIn, playerIndex, parcelIndex, tok
         return false
     if (currentHarvestRate >= maxDesiredHarvestRate)
         return false
-    const allHarvestersAreAtMaxLevel = getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, tokenToFarm) >= verseIn.rules.installations[`harvester_${tokenToFarm}`].maxLevel
+    const allHarvestersAreAtMaxLevel = getLowestBuildLevelOfHarvesters(verseIn, playerIndex, parcelIndex, tokenToFarm) >= Math.min(verseIn.rules.installations[`harvester_${tokenToFarm}`].maxLevel, maxLevelOfHarvesters)
     const hasAHarvester = Parcel.getInstallationTypeCount(verseIn.players[playerIndex].parcels[parcelIndex], `harvester_${tokenToFarm}`) > 0
     const canUpgradeAHarvester = hasAHarvester && !allHarvestersAreAtMaxLevel
-    if (upgradeHarvestersBeforeCraftingMore) {
-        return canUpgradeAHarvester ? upgradeLowestLevelHarvesterOfType(...args) : craftHarvestersOfType(...args)
-    }
-    return canCraftAHarvester ? craftHarvestersOfType(...args) : upgradeLowestLevelHarvesterOfType(...args)
+    if (upgradeHarvestersBeforeCraftingMore && canUpgradeAHarvester)
+        return upgradeLowestLevelHarvesterOfType(...args)
+    if (canCraftAHarvester)
+        return craftHarvestersOfType(...args)
+    if (canUpgradeAHarvester)
+        return upgradeLowestLevelHarvesterOfType(...args)
+    return false
 }
 
 function doesUpgradingMakerIncreaseHarvesterLimit (verseIn, playerIndex, parcelIndex, tokenToFarm) {

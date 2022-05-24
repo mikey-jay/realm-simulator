@@ -386,3 +386,21 @@ test('expandHorizontal - if maker and altar are the same level, upgrade the alta
 
     t.end()
 })
+// skip for side effects issue
+test.skip('expandHorizontal - don\'t upgrade harvester above the max level specified in strategy', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    const strategyMaxLevel = 3
+    
+    let altarL4 = { ...Altar.create(), buildLevel: 4, level: 4 }
+    let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let harvesterL3 = { ...Harvester.create('alpha'), buildLevel: 3, level: 3 }
+
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, harvesterL3], [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL4], [Parcel.addTokens, 'alpha', 100], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_alpha.buildCosts[3]])
+    rules.installations.harvester_alpha.maxQuantityPerParcel.spacious = 1
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.false(expandHorizontal(verse, 0, 0, ['alpha'], false, strategyMaxLevel))
+
+    t.end()
+})
