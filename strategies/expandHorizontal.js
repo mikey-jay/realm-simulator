@@ -2,7 +2,7 @@ const Player = require('../entities/player.js')
 const Parcel = require('../entities/parcel.js')
 const Installation = require('../entities/installation.js')
 const { craftAndEquipFudHarvester, hasReachedMaxOfType, hasReachedMaxOfClass, getMissingPrerequisiteTypes, craftAndEquipAltar, craftAndEquipMaker, craftAndEquipFomoHarvester, craftAndEquipAlphaHarvester, craftAndEquipKekHarvester, craftAndEquipFudReservoir, craftAndEquipFomoReservoir, craftAndEquipAlphaReservoir, craftAndEquipKekReservoir } = require('../use_cases/craftAndEquip.js')
-const { addObjectKeys, pipe } = require('../utils.js')
+const { addObjectKeys, pipe, sumArray } = require('../utils.js')
 const { upgradeLowestLevelAltar, upgradeLowestLevelMaker, upgradeLowestLevelFudHarvester, upgradeLowestLevelFomoHarvester, upgradeLowestLevelAlphaHarvester, upgradeLowestLevelKekHarvester, upgradeLowestLevelFudReservoir, upgradeLowestLevelFomoReservoir, upgradeLowestLevelAlphaReservoir, upgradeLowestLevelKekReservoir, upgradeHighestLevelAltar, upgradeHighestLevelMaker, upgradeHighestLevelFudHarvester, upgradeHighestLevelFomoHarvester, upgradeHighestLevelAlphaHarvester, upgradeHighestLevelKekHarvester, upgradeHighestLevelFudReservoir, upgradeHighestLevelFomoReservoir, upgradeHighestLevelAlphaReservoir, upgradeHighestLevelKekReservoir, getMaxConcurrentUpgradeLimit } = require('../use_cases/craftUpgrade.js')
 const { getParcelTokensInOrderOfAbundance } = require('../use_cases/getParcelTokensInOrderOfAbundance.js')
 const { getIndexOfHighestLevelInstallation, getIndexOfLowestLevelInstallation } = require('../entities/parcel.js')
@@ -60,18 +60,27 @@ function getBlocksRemainingInGame(verseIn) {
     return gameLengthInBlocks - verseIn.currentTime
 }
 
+function getDaysRemainingInAct(verseIn) {
+    const actLengthInBlocks = verseIn.rules.surveyingActBlocks
+    const secondsPerBlock = verseIn.rules.surveyingActBlocks
+    const blocksRemainingInAct = actLengthInBlocks - verseIn.currentTime
+    const daysRemainingInAct = blocksRemainingInAct * secondsPerBlock / 60 / 60 / 24
+    return daysRemainingInAct
+}
+
+function getAlchemicaRemainingInAct(verseIn, playerIndex, parcelIndex, token) {
+    const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
+    const numDistributionsSoFar = verseIn.rules.surveyingRoundStartTimes.filter((t) => t < verseIn.currentTime).length
+    const pctOfAlchemicaInRemainingDistributions = sumArray(verseIn.rules.surveyingRoundDistributionRates.slice(numDistributionsSoFar))
+    return pctOfAlchemicaInRemainingDistributions * verseIn.rules.avgBaseAlchemicaPerParcel[myParcel.size][token]
+}
+
 function getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, token) {
-    /*
-    const blocksRemaining = getBlocksRemainingInGame(verseIn)
-    const daysRemaining = blocksRemaining * verseIn.rules.secondsPerBlock / 60 / 60 / 24
-    const parcelTokenBalance = verseIn.players[playerIndex].parcels[parcelIndex].tokens[token]
-    if (parcelTokenBalance > 0 && daysRemaining > 0) {
-        return parcelTokenBalance / daysRemaining
-    }
-    return 0*/
-    const lengthOfRoundOneInDays = verseIn.rules.surveyingRoundStartTimes[1] * verseIn.rules.secondsPerBlock / 60 / 60 / 24
-    const roundOneAlchemicaQty = verseIn.rules.avgBaseAlchemicaPerParcel[verseIn.players[playerIndex].parcels[parcelIndex].size][token] * verseIn.rules.surveyingRoundDistributionRates[0]
-    const maxDesiredHarvestRate = (roundOneAlchemicaQty || 0) / lengthOfRoundOneInDays
+    const daysRemainingInAct = getDaysRemainingInAct(verseIn)
+    const alchemicaRemainingInAct = getAlchemicaRemainingInAct(verseIn, playerIndex, parcelIndex, token)
+    if (daysRemainingInAct <= 0)
+        return verseIn.players[playerIndex].parcels[parcelIndex].tokens[token]
+    const maxDesiredHarvestRate = (alchemicaRemainingInAct || 0) / daysRemainingInAct
     return maxDesiredHarvestRate
 }
 
