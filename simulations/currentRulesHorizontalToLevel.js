@@ -8,9 +8,17 @@ const rulesetName = 'current'
 const rules = require(`../rulesets/${rulesetName}.js`)
 
 const startingAlchemica = rules.avgBaseAlchemicaPerParcel.spacious
-const botL1 = pipe(Bot.create('horizontalToL1'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const botL3 = pipe(Bot.create('horizontalToL3'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const botL5 = pipe(Bot.create('horizontalToL5'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const botL7 = pipe(Bot.create('horizontalToL7'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-const botL9 = pipe(Bot.create('expandHorizontal'), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
-module.exports = (harvestFrequencyHrs, endTimeDays) => pipe(Simulation.create(rulesetName, harvestFrequencyHrs, endTimeDays), [Simulation.addBot, botL1], [Simulation.addBot, botL3], [Simulation.addBot, botL5], [Simulation.addBot, botL7], [Simulation.addBot, botL9],runSimulation)
+
+const strategies = ['horizontalToL1', 'horizontalToL3', 'horizontalToL5', 'horizontalToL7', 'expandHorizontal']
+
+module.exports = async (harvestFrequencyHrs, endTimeDays) => {
+    const runStrategy = (strategyName) => {
+        const strategyBot = pipe(Bot.create(strategyName), [Bot.addTokens, startingAlchemica], [Bot.addParcel, Parcel.create('spacious')])
+        return pipe(Simulation.create(rulesetName, harvestFrequencyHrs, endTimeDays), [Simulation.addBot, strategyBot], runSimulation)
+    }
+    const runStrategyAsync = (strategyName) => new Promise((resolve, reject) => {
+        resolve(runStrategy(strategyName))
+    })    
+    const sims = strategies.map(runStrategyAsync)
+    return Promise.all(sims)
+}
