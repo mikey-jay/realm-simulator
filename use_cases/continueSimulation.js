@@ -4,10 +4,16 @@ const {passTime} = require('./passTime.js')
 const { emptyParcelReservoirs } = require('./emptyReservoirs.js')
 const { getDestroyValueOfAllInstallations } = require('./destroyInstallation.js')
 
+function printProgress(progress){
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    process.stdout.write(progress);
+}
+
 function continueSimulation(simulationIn) {
     let simulationOut = structuredClone(simulationIn)
     const pctComplete = Math.round(simulationIn.gotchiverse.currentTime / simulationIn.endTime * 100)
-    console.log(`Simulating realm... (${pctComplete}%) Block ${Math.round(simulationIn.gotchiverse.currentTime)} / ${Math.round(simulationIn.endTime)}`)
+    printProgress(`Simulating realm... (${pctComplete}%) Block ${Math.round(simulationIn.gotchiverse.currentTime)} / ${Math.round(simulationIn.endTime)}`)
     for (let bi = 0 ; bi < simulationOut.bots.length ; bi++) {
         const useCaseFactory = require(`../strategies/${simulationOut.bots[bi].strategyName}`)
         for (let pi = 0 ; pi < simulationOut.gotchiverse.players[bi].parcels.length ; pi++) {

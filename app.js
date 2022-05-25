@@ -64,5 +64,5 @@ runSims.then((sims) => {
     const csv = json2csvParser.parse(formattedResults);
     const fullPathResultFile = `${__dirname}/results/${simulationName}-result-${Date.now()}.csv`
     fs.writeFile(fullPathResultFile, csv, (err) => { if (err) return console.log(err) })
-    console.log(`Simulation completed in ${msToTime(simulationTime)}. Results written to ${fullPathResultFile}`)
+    console.log(`\n\nSimulation completed in ${msToTime(simulationTime)}. Results written to ${fullPathResultFile}\n`)
 })
