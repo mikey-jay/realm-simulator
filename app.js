@@ -28,11 +28,6 @@ const formatResult = (resultIn) => {
     return resultOut
 }
 
-function addToResultsPlayerIndex(sim, n) {
-    sim.results = sim.results.map((r) => r.playerIndex += n)
-    return n
-}
-
 function msToTime(duration) {
     var milliseconds = parseInt((duration%1000)/100)
         , seconds = parseInt((duration/1000)%60)
