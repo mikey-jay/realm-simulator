@@ -5,7 +5,7 @@ function pipe(input, ...args) {
     return pipe(func(input, ...params), ...args)
 }
 
-const sumArray = (arr) => arr.reduce((total, item) => total + item)
+const sumArray = (arr) => arr.reduce((total, item) => total + item, 0)
 
 function getWeightedAverage(dataset, weights) {
     if (dataset.length !== weights.length) throw new Error('Cannot get weighted average - dataset and weights must be arrays of the same length')
