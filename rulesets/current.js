@@ -209,6 +209,7 @@ module.exports = {
         kek: 10 * 10**9 * 0.5
     },
     destroyInstallationValueRate: 0.5,
+    surveyingActBlocks,
     surveyingRoundBlocks,
     surveyingRoundStartTimes: [
         0,
