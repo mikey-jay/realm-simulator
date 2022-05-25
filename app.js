@@ -23,7 +23,7 @@ const formatResult = (resultIn) => {
 
     const resultOut = { blockTimeRounded, days, playerIndex, parcelIndex, playerTotalFudTerms,
         playerChangeFudTerms, parcelTotalFudTerms, parcelChangeFudTerms, totalHarvesters, averageHarvesterLevel,
-        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, ...structuredClone(resultIn) }
+        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms } //, ...structuredClone(resultIn) }
     
     return resultOut
 }
