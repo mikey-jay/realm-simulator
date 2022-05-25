@@ -62,7 +62,7 @@ function getBlocksRemainingInGame(verseIn) {
 
 function getDaysRemainingInAct(verseIn) {
     const actLengthInBlocks = verseIn.rules.surveyingActBlocks
-    const secondsPerBlock = verseIn.rules.surveyingActBlocks
+    const secondsPerBlock = verseIn.rules.secondsPerBlock
     const blocksRemainingInAct = actLengthInBlocks - verseIn.currentTime
     const daysRemainingInAct = blocksRemainingInAct * secondsPerBlock / 60 / 60 / 24
     return daysRemainingInAct
@@ -80,7 +80,8 @@ function getMaximumDesiredHarvestRate(verseIn, playerIndex, parcelIndex, token) 
     const alchemicaRemainingInAct = getAlchemicaRemainingInAct(verseIn, playerIndex, parcelIndex, token)
     if (daysRemainingInAct <= 0)
         return verseIn.players[playerIndex].parcels[parcelIndex].tokens[token]
-    const maxDesiredHarvestRate = (alchemicaRemainingInAct || 0) / daysRemainingInAct
+    const totalAlchemicaLeftToBeHarvested = verseIn.players[playerIndex].parcels[parcelIndex].tokens[token] + (alchemicaRemainingInAct || 0)
+    const maxDesiredHarvestRate = totalAlchemicaLeftToBeHarvested / daysRemainingInAct
     return maxDesiredHarvestRate
 }
 
