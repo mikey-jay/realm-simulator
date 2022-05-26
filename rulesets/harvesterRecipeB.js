@@ -1,6 +1,8 @@
 const currentRules = require('./current.js')
 
 const newRules = structuredClone(currentRules)
+
+// v007
 newRules.installations.harvester_fud = { ...currentRules.installations.harvester_fud, 
     buildCosts: [
     { fud: 250, fomo: 120, alpha: 0, kek: 0 }, // L1
