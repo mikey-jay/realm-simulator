@@ -12,7 +12,9 @@ module.exports = async (strategies, rulesetName, harvestFrequencyHrs, endTimeDay
         return pipe(Simulation.create(rulesetName, harvestFrequencyHrs, endTimeDays), [Simulation.addBot, strategyBot], runSimulation)
     }
     const runStrategyAsync = (strategyName) => new Promise((resolve, reject) => {
-        console.log(`\nRunning strategy ${strategyName}...`)
+        const strategyNum = strategies.indexOf(strategyName) + 1
+        const numStrategies = strategies.length
+        console.log(`\nRunning strategy (${strategyNum}/${numStrategies}) ${strategyName}...`)
         resolve(runStrategy(strategyName))
     })    
     const sims = strategies.map(runStrategyAsync)
