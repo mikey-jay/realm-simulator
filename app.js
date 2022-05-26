@@ -52,9 +52,10 @@ function mergeSimulationResults(sims) {
 const simulationName = process.argv[2] || 'currentRules'
 const harvestFrequencyHrs = process.argv[3]
 const endTimeDays = process.argv[4]
+const parcelSize = process.argv[4] || 'spacious'
 console.log(`Running simulation: ${simulationName}`)
 const simulationTimeStart = Date.now()
-const runSims = require(`./simulations/${simulationName}.js`)(harvestFrequencyHrs, endTimeDays)
+const runSims = require(`./simulations/${simulationName}.js`)(harvestFrequencyHrs, endTimeDays, parcelSize)
 const { Parser, transforms: { unwind, flatten } } = require('json2csv');
 runSims.then((sims) => {
     const simulationTime = Date.now() - simulationTimeStart
