@@ -20,10 +20,10 @@ const formatResult = (resultIn) => {
     const totalMakers = resultIn.parcelTotals.installationClasses.maker
     const averageMakerLevel = resultIn.parcelTotals.averageLevels.maker
     const destroyValueFudTerms = getWalletValueInFudTerms({ tokens: resultIn.parcelTotals.destroyValue }, tokenSupply)
-
+    const useCaseName = resultIn.useCaseName
     const resultOut = { blockTimeRounded, days, playerIndex, parcelIndex, playerTotalFudTerms,
         playerChangeFudTerms, parcelTotalFudTerms, parcelChangeFudTerms, totalHarvesters, averageHarvesterLevel,
-        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms } //, ...structuredClone(resultIn) }
+        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, useCaseName } //, ...structuredClone(resultIn) }
     
     return resultOut
 }
