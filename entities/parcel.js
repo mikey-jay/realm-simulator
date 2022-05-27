@@ -2,10 +2,10 @@ const { sumArray } = require('../utils.js')
 const Wallet = require('./wallet.js')
 
 const parcelSizes = {
-    humble: { width: 8, height: 8 },
-    reasonable: { width: 16, height: 16 },
-    spacious: { width: 32, height: 64 },
-    partner: { width: 64, height: 64 }
+    humble: { width: 16, height: 16 },
+    reasonable: { width: 32, height: 32 },
+    spacious: { width: 64, height: 128 },
+    partner: { width: 128, height: 128 }
 }
 
 function create (size) {
