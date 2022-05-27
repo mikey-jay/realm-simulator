@@ -30,13 +30,25 @@ The expandooor bot (player 0 in the simulation), seeks to maximize the expansion
 ### Vertical Expansion (aka the "upgradooor")
 The upgradooor bot (player 1 in the simulation), seeks to upgrade existing harvesters to their maximum level before crafting new harvesters.
 
+### Horizontal to L1 (aka the "low levelooor")
+The low levelooor is a humble farmer who does not upgrade any of their harvesters past level 1.
+
+### Build Only L1 FUD Harvesters (aka the "low level fud maxi")
+This bot is like the low levelooor, except they focus only on harvesting a single resource (in this case, FUD).
+
 ## Rulesets
 Rulesets are contained in the `/rulesets` folder of the project. This is where game rules can be modified to examine their impact on the simulation output. The `current.js` ruleset file contains the rules as they currently exist as of bible chapter 4.
 
-## Results
-Results are output to a timestamped .csv file in the `results` folder named similarly to the simulation script name that generated them. These can be imported into a spreadsheet for further charting and analysis. I will try and put PDF's with charts in the folder as well. :)
+### Recipe A
+This is a modified version of the harvester recipe which somewhat improves the ROI of higher level harvesters and diminishes the ROI of lower level harvesters compared to the original (current) ruleset.
 
-**Note**: The reservoir spillover rates have not yet been announced, the simulation uses the same spillover rates as altars.
+### Recipe B
+This is a modified version of the harvester recipe which greatly improves the ROI of higher level harvesters and greatly diminishes the ROI of lower level harvesters compared to the original (current) ruleset.
+
+## Results
+Results are output to a timestamped .csv file in the `results` folder named similarly to the simulation script name that generated them. Charting and further aggregation and analysis of the data has been conducted and can be found in this [Google Drive folder](https://drive.google.com/drive/folders/1WB8L6aEPEdGnEgxcRUD3ysRwko2fjzMU).
+
+**Note**: As of the time this simulation was created, the reservoir spillover rates have not yet been announced, the simulation uses the same spillover rates as altars.
 
 # Installing the Script
 I am assuming you already have [Node.js](https://nodejs.org/en/) installed. The script was developed and tested with v17.4.0. To install, run the following from the root directory of the project: `npm install`
