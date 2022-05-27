@@ -1,10 +1,10 @@
 const installationTemplate = {
     maxLevel: 9,
     maxQuantityPerParcel: {
-        humble: 8,
-        reasonable: 32,
-        spacious: 256,
-        partner: 512
+        humble: 16,
+        reasonable: 64,
+        spacious: 512,
+        partner: 1024
     },
     prerequisites: ['altar'],
     levelPrerequisite: 'altar'
