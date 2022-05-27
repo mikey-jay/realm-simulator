@@ -5,9 +5,13 @@ const { emptyParcelReservoirs } = require('./emptyReservoirs.js')
 const { getDestroyValueOfAllInstallations } = require('./destroyInstallation.js')
 
 function printProgress(progress){
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    process.stdout.write(progress);
+    if (process.stdout.clearLine) {
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write(progress);
+    } else {
+        console.log(progress)
+    }
 }
 
 function continueSimulation(simulationIn) {
