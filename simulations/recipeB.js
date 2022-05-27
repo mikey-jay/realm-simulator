@@ -1,5 +1,5 @@
 const runStrategyAsync = require('../use_cases/runStrategyAsync.js')
 const rulesetName = 'harvesterRecipeB'
-const strategies = ['expandHorizontal', 'expandVertical']
+const strategies = ['expandVertical', 'expandHorizontal']
 
 module.exports = (...args) => runStrategyAsync(strategies, rulesetName, ...args)
