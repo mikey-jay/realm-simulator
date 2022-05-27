@@ -1,6 +1,7 @@
-const Parcel = require('../entities/parcel.js')
+const Wallet = require('../entities/wallet.js')
 const { getWalletValueInFudTerms } = require('../use_cases/getWalletValueInFudTerms.js')
 const { pipe } = require('../utils.js')
+const { getTotalHarvestRates } = require('./getTotalHarvestRates.js')
 
 function getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek']) {
     let remainingTokens = [...tokensToFarm]
@@ -17,15 +18,22 @@ function getMostAbundantTokenInParcel(verseIn, playerIndex, parcelIndex, tokensT
     const myParcel = verseIn.players[playerIndex].parcels[parcelIndex]
     const tokenSupply = verseIn.rules.parcelTokenAllocation
     let mostAbundantToken = tokensToFarm[0]
-    let fudValueOfMostAbundantToken = 0
-    tokensToFarm.forEach((token) => {
-        const parcelWithOnlyThisToken = pipe(Parcel.create(myParcel.size), [Parcel.addTokens, token, myParcel.tokens[token] || 0])
-        const fudValueOfParcelToken = getWalletValueInFudTerms(parcelWithOnlyThisToken, tokenSupply)
-        if (fudValueOfParcelToken > fudValueOfMostAbundantToken) {
-            mostAbundantToken = token
-            fudValueOfMostAbundantToken = fudValueOfParcelToken
+    let highestValueToHarvestRateRatio = 0
+    for (token of tokensToFarm) {
+        const walletWithOnlyThisToken = pipe(Wallet.create(), [Wallet.addTokens, token, myParcel.tokens[token] || 0])
+        const fudValueOfParcelToken = getWalletValueInFudTerms(walletWithOnlyThisToken, tokenSupply)
+        const harvestRateInTokenTerms = getTotalHarvestRates(verseIn, playerIndex, parcelIndex)[token] || 0
+        if (fudValueOfParcelToken > 0) {
+            if (harvestRateInTokenTerms == 0)
+                return token
+            const harvestRateInFudTerms = pipe(Wallet.create(), [Wallet.addTokens, token, harvestRateInTokenTerms], getWalletValueInFudTerms)
+            const valueToHarvestRate = fudValueOfParcelToken / harvestRateInFudTerms
+            if (valueToHarvestRate > highestValueToHarvestRateRatio) {
+                mostAbundantToken = token
+                highestValueToHarvestRateRatio = valueToHarvestRate
+            }
         }
-    })
+    }
     return mostAbundantToken
 }
 

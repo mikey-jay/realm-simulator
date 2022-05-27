@@ -14,11 +14,28 @@ test('expandHorizontal - choose the most abundant alchemica to harvest', (t) => 
     
     let altarL1 = pipe(Altar.create(), Altar.addLevel)
     let reservoirL9 = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
-    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 100], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    const fudHarvester = pipe(Harvester.create('fud'), Harvester.addLevel)
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, reservoirL9], [Parcel.addInstallation, fudHarvester], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 10000], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
     let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
     let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
 
-    t.equals(expandHorizontal(verse, 0, 0).name, 'craftAndEquipAlphaHarvester', 'all prerequisites are met - return craft fomo harvester use case')
+    t.equals(expandHorizontal(verse, 0, 0, ['fud', 'alpha']).name, 'craftAndEquipAlphaHarvester', 'craft an alpha harvester because it\'s most abundant')
+
+    t.end()
+})
+
+test('expandHorizontal - choose the most abundant alchemica to harvest - but choose relative to the current harvest rate', (t) => {
+    const rules = require('../rulesets/testRules.js')
+    
+    let altarL1 = pipe(Altar.create(), Altar.addLevel)
+    let alphaReservoir = { ...Reservoir.create('alpha'), buildLevel: 9, level: 9 }
+    let alphaHarvester = { ...Harvester.create('alpha'), buildLevel: 1, level: 1 }
+    let fudReservoir = { ...Reservoir.create('fud'), buildLevel: 9, level: 9 }
+    let testParcel = pipe(Parcel.create('spacious'), [Parcel.addInstallation, fudReservoir],  [Parcel.addInstallation, alphaHarvester], [Parcel.addInstallation, alphaReservoir], [Parcel.addInstallation, altarL1], [Parcel.addTokens, 'alpha', 100], [Parcel.addTokens, rules.parcelTokenAllocation, 0.01])
+    let testPlayer = pipe(Player.create(), [Player.addParcel, testParcel], [Player.addTokens, rules.installations.harvester_fud.buildCosts[0]])
+    let verse = pipe(Gotchiverse.create(rules), [Gotchiverse.addPlayer, testPlayer])
+
+    t.equals(expandHorizontal(verse, 0, 0, ['fud', 'alpha']).name, 'craftAndEquipFudHarvester', 'craft a fud harvester because its abundance is considered in proportion to the harvest rate')
 
     t.end()
 })
