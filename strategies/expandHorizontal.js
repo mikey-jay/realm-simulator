@@ -6,6 +6,7 @@ const { addObjectKeys, pipe, sumArray } = require('../utils.js')
 const { upgradeLowestLevelAltar, upgradeLowestLevelMaker, upgradeLowestLevelFudHarvester, upgradeLowestLevelFomoHarvester, upgradeLowestLevelAlphaHarvester, upgradeLowestLevelKekHarvester, upgradeLowestLevelFudReservoir, upgradeLowestLevelFomoReservoir, upgradeLowestLevelAlphaReservoir, upgradeLowestLevelKekReservoir, upgradeHighestLevelAltar, upgradeHighestLevelMaker, upgradeHighestLevelFudHarvester, upgradeHighestLevelFomoHarvester, upgradeHighestLevelAlphaHarvester, upgradeHighestLevelKekHarvester, upgradeHighestLevelFudReservoir, upgradeHighestLevelFomoReservoir, upgradeHighestLevelAlphaReservoir, upgradeHighestLevelKekReservoir, getMaxConcurrentUpgradeLimit } = require('../use_cases/craftUpgrade.js')
 const { getParcelTokensInOrderOfAbundance } = require('../use_cases/getParcelTokensInOrderOfAbundance.js')
 const { getIndexOfHighestLevelInstallation, getIndexOfLowestLevelInstallation } = require('../entities/parcel.js')
+const { getTotalHarvestRates } = require('../use_cases/getTotalHarvestRates.js')
 
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false, maxLevelOfHarvesters = 9) => {
     const tokensInOrderOfAbundance = getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm)
@@ -132,18 +133,6 @@ function craftHarvestersOfType(verseIn, playerIndex, parcelIndex, tokenToFarm) {
     }
 
     return craftNewInstallation(verseIn, playerIndex, parcelIndex, harvesterType)
-}
-
-function getTotalHarvestRates(verseIn, playerIndex, parcelIndex) {
-    const harvesters = Parcel.getInstallationsOfClass(verseIn.players[playerIndex].parcels[parcelIndex], 'harvester').filter((h) => h.level > 0)
-    const getHarvestRate = (h) => {
-        let rate = { fud: 0, fomo: 0, alpha: 0, kek: 0 }
-        rate[h.resourceToken] = verseIn.rules.installations[h.type].harvestRates[h.level - 1]
-        return rate
-    }
-    const harvestRates = harvesters.map(getHarvestRate)
-    const totalHarvestRate = harvestRates.reduce((total, current) => addObjectKeys(total, current), { fud: 0, fomo: 0, alpha: 0, kek: 0 })
-    return totalHarvestRate
 }
 
 function getTotalReservoirCapacitiesIncludingUpgradesInProgress(verseIn, playerIndex, parcelIndex) {
