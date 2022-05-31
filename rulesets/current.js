@@ -110,7 +110,7 @@ const harvester_alpha = { ...harvesterTemplate,
         { fud: 675, fomo: 560, alpha: 60, kek: 20 }, // L4
         { fud: 1350, fomo: 1125, alpha: 110, kek: 45 }, // L5
         { fud: 2700, fomo: 2250, alpha: 225, kek: 90 }, // L6
-        { fud: 45000, fomo: 5650, alpha: 550, kek: 450 }, // L7
+        { fud: 4500, fomo: 5650, alpha: 550, kek: 450 }, // L7
         { fud: 9000, fomo: 11250, alpha: 1100, kek: 900 }, // L8
         { fud: 18000, fomo: 22500, alpha: 2250, kek: 2700 }, // L9
     ],
