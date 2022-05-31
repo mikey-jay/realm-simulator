@@ -237,28 +237,28 @@ module.exports = {
     ],
     avgBaseAlchemicaPerParcel: {
         humble: {
-            fud: 28473 * 2,
-            fomo: 14237 * 2,
-            alpha: 7118 * 2,
-            kek: 2847 * 2
+            fud: 28473,
+            fomo: 14237,
+            alpha: 7118,
+            kek: 2847
         },
         reasonable: {
-            fud: 113893 * 2,
-            fomo: 56947 * 2,
-            alpha: 28473 * 2,
-            kek: 11389 * 2
+            fud: 113893,
+            fomo: 56947,
+            alpha: 28473,
+            kek: 11389
         },
         spacious: {
-            fud: 911145 * 2,
-            fomo: 455573 * 2,
-            alpha: 227786 * 2,
-            kek: 91115 * 2
+            fud: 911145,
+            fomo: 455573,
+            alpha: 227786,
+            kek: 91115
         },
         partner: {
-            fud: 1822290 * 2,
-            fomo: 911145 * 2,
-            alpha: 455573 * 2,
-            kek: 182229 * 2
+            fud: 1822290,
+            fomo: 911145,
+            alpha: 455573,
+            kek: 182229
         }
     },
     craftingRevenueDistribution: {
