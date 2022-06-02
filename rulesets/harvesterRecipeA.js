@@ -2,11 +2,6 @@ const currentRules = require('./current.js')
 
 const newRules = structuredClone(currentRules)
 
-newRules.installations.reservoir_fud.spilloverRates = [0.67, 0.57, 0.48, 0.38, 0.29, 0.24, 0.19, 0.14, 0.10]
-newRules.installations.reservoir_fomo.spilloverRates = [0.74, 0.63, 0.53, 0.42, 0.32, 0.26, 0.21, 0.16, 0.11]
-newRules.installations.reservoir_alpha.spilloverRates = [0.63, 0.54, 0.45, 0.36, 0.27, 0.23, 0.18, 0.14, 0.09]
-newRules.installations.reservoir_kek.spilloverRates = [0.77, 0.66, 0.55, 0.44, 0.33, 0.28, 0.22, 0.17, 0.11]
-
 newRules.installations.harvester_fud = { ...currentRules.installations.harvester_fud, 
     buildCosts: [
     { fud: 10, fomo: 5, alpha: 0, kek: 0 }, // L1
