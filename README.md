@@ -48,7 +48,7 @@ This is a modified version of the harvester recipe which greatly improves the RO
 ## Results
 Results are output to a timestamped .csv file in the `results` folder named similarly to the simulation script name that generated them. Charting and further aggregation and analysis of the data has been conducted and can be found in this [Google Drive folder](https://drive.google.com/drive/folders/1WB8L6aEPEdGnEgxcRUD3ysRwko2fjzMU).
 
-**Note**: As of the time this simulation was created, the reservoir spillover rates have not yet been announced, the simulation uses the same spillover rates as altars.
+**Note**: As of the time this simulation was created, the reservoir spillover rates have not yet been announced, a set of sample proposed spillover rates has been used.
 
 # Installing the Script
 I am assuming you already have [Node.js](https://nodejs.org/en/) installed. The script was developed and tested with v17.4.0. To install, run the following from the root directory of the project: `npm install`
