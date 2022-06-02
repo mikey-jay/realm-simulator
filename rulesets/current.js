@@ -21,7 +21,6 @@ const harvesterTemplate = {
 }
 const reservoirTemplate = {
     ...installationTemplate,
-    spilloverRates: [ 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.20, 0.15, 0.10 ],
     class: 'reservoir',
 }
 const altar = { ...installationTemplate,
