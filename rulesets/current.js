@@ -147,7 +147,8 @@ const reservoir_fud = { ...reservoirTemplate,
         { fud: 57000, fomo: 38000, alpha: 0, kek: 5700 }, // L9
     ],
     buildTime: [0, 30000, 75000, 150000, 225000, 300000, 600000, 900000, 1500000],
-    capacities: [5, 20, 70, 250, 550, 1300, 2750, 6600, 13300]
+    capacities: [5, 20, 70, 250, 550, 1300, 2750, 6600, 13300],
+    spilloverRates: [0.67, 0.57, 0.48, 0.38, 0.29, 0.24, 0.19, 0.14, 0.10]
 }
 const reservoir_fomo = { ...reservoirTemplate,
     buildCosts: [
@@ -162,7 +163,8 @@ const reservoir_fomo = { ...reservoirTemplate,
         { fud: 42000, fomo: 52500, alpha: 0, kek: 6300 }, // L9
     ],
     buildTime: [0, 33500, 83000, 165000, 250000, 325000, 675000, 1000000, 1700000],
-    capacities: [2, 9, 30, 120, 250, 600, 1300, 3200, 6500]
+    capacities: [2, 9, 30, 120, 250, 600, 1300, 3200, 6500],
+    spilloverRates: [0.74, 0.63, 0.53, 0.42, 0.32, 0.26, 0.21, 0.16, 0.11]
 }
 const reservoir_alpha = { ...reservoirTemplate,
     buildCosts: [
@@ -177,7 +179,8 @@ const reservoir_alpha = { ...reservoirTemplate,
         { fud: 36000, fomo: 36000, alpha: 4500, kek: 5400 }, // L9
     ],
     buildTime: [0, 29000, 72000, 140000, 220000, 290000, 575000, 860000, 1450000],
-    capacities: [1, 5, 20, 65, 150, 350, 775, 1900, 3900]
+    capacities: [1, 5, 20, 65, 150, 350, 775, 1900, 3900],
+    spilloverRates: [0.63, 0.54, 0.45, 0.36, 0.27, 0.23, 0.18, 0.14, 0.09]
 }
 const reservoir_kek = { ...reservoirTemplate,
     buildCosts: [
@@ -192,7 +195,8 @@ const reservoir_kek = { ...reservoirTemplate,
         { fud: 66000, fomo: 44000, alpha: 0, kek: 8800 }, // L9
     ],
     buildTime: [0, 36000, 88000, 175000, 260000, 350000, 700000, 1050000, 1750000],
-    capacities: [0.5, 2, 6, 25, 50, 100, 225, 550, 1100]
+    capacities: [0.5, 2, 6, 25, 50, 100, 225, 550, 1100],
+    spilloverRates: [0.77, 0.66, 0.55, 0.44, 0.33, 0.28, 0.22, 0.17, 0.11]
 }
 
 const secondsPerBlock = 2.3 // as per polygon
