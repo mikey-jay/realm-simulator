@@ -10,6 +10,8 @@ const { getTotalHarvestRates } = require('../use_cases/getTotalHarvestRates.js')
 
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false, maxLevelOfHarvesters = 9) => {
     const tokensInOrderOfAbundance = getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm)
+    const maxDesiredAltarLevel = getMaximumDesiredAltarLevel(verseIn, playerIndex, parcelIndex)
+    maxLevelOfHarvesters = Math.min(maxLevelOfHarvesters, maxDesiredAltarLevel)
     for (let i = 0 ; i < tokensInOrderOfAbundance.length ; i++) {
         const craftStrategy = craftOrUpgradeHarvestersOfToken(verseIn, playerIndex, parcelIndex, tokensInOrderOfAbundance[i], upgradeHarvestersBeforeCraftingMore, maxLevelOfHarvesters)
         if (craftStrategy)
@@ -155,6 +157,32 @@ const upgradeLowestLevelHarvesterOfType = (gotchiverseIn, playerIndex, parcelInd
     return upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, installationTypeToUpgrade)
 }
 
+function getMaximumDesiredAltarLevel(gotchiverseIn, playerIndex, parcelIndex) {
+    const parcelSize = gotchiverseIn.players[playerIndex].parcels[parcelIndex].size
+    switch (parcelSize) {
+        case 'spacious':
+            return 8
+        case 'reasonable':
+            return 6
+        case 'humble':
+            return 4
+    }
+    return gotchiverseIn.rules.installations.altar.maxLevel
+}
+
+function getMaximumDesiredMakerLevel(gotchiverseIn, playerIndex, parcelIndex) {
+    const parcelSize = gotchiverseIn.players[playerIndex].parcels[parcelIndex].size
+    switch (parcelSize) {
+        case 'spacious':
+            return 7
+        case 'reasonable':
+            return 3
+        case 'humble':
+            return 1
+    }
+    return gotchiverseIn.rules.installations.maker.maxLevel
+}
+
 function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installationType, upgradeLowest = true) {
 
     const me = gotchiverseIn.players[playerIndex]
@@ -196,8 +224,9 @@ function upgradeInstallation(gotchiverseIn, playerIndex, parcelIndex, installati
         const lowestLevelMaker = myParcel.installations[Parcel.getIndexOfLowestLevelInstallation(myParcel, 'maker')]
 
         if (!canCraftAMaker && (typeof lowestLevelMaker != 'undefined') && concurrentUpgrades >= maxConcurrentUpgradeLimit - 1) {
+            const maxDesiredMakerLevel = getMaximumDesiredMakerLevel(gotchiverseIn, playerIndex, parcelIndex)
             const canUpgradeMaker = (lowestLevelMaker.level >= lowestLevelMaker.buildLevel) && (lowestLevelMaker.level < gotchiverseIn.rules.installations.maker.maxLevel)
-            if (canUpgradeMaker)
+            if (canUpgradeMaker && lowestLevelMaker.buildLevel < maxDesiredMakerLevel)
                 return upgradeLowestLevelInstallation(gotchiverseIn, playerIndex, parcelIndex, 'maker')
         }
     }
