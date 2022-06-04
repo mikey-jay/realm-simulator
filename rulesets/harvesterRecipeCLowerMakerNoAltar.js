@@ -2,6 +2,11 @@ const currentRules = require('./current.js')
 
 const newRules = structuredClone(currentRules)
 
+// remove the altar level prerequisite
+for (let i in newRules.installations) {
+    newRules.installations[i].levelPrerequisite = undefined
+}
+
 newRules.installations.maker = { ...currentRules.installations.maker, 
     buildCosts: [
     { fud: 1250, fomo: 150, alpha: 250, kek: 63 }, // L1
