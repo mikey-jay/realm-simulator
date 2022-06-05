@@ -11,7 +11,8 @@ const { getTotalHarvestRates } = require('../use_cases/getTotalHarvestRates.js')
 module.exports = (verseIn, playerIndex, parcelIndex, tokensToFarm = ['fud', 'fomo', 'alpha', 'kek'], upgradeHarvestersBeforeCraftingMore = false, maxLevelOfHarvesters = 9) => {
     const tokensInOrderOfAbundance = getParcelTokensInOrderOfAbundance(verseIn, playerIndex, parcelIndex, tokensToFarm)
     const maxDesiredAltarLevel = getMaximumDesiredAltarLevel(verseIn, playerIndex, parcelIndex)
-    maxLevelOfHarvesters = Math.min(maxLevelOfHarvesters, maxDesiredAltarLevel)
+    const isAltarLevelPrereqForMaker = verseIn.rules.installations.harvester_fud.levelPrerequisite == 'altar'
+    maxLevelOfHarvesters = Math.min(maxLevelOfHarvesters, isAltarLevelPrereqForMaker ? maxDesiredAltarLevel : 9)
     for (let i = 0 ; i < tokensInOrderOfAbundance.length ; i++) {
         const craftStrategy = craftOrUpgradeHarvestersOfToken(verseIn, playerIndex, parcelIndex, tokensInOrderOfAbundance[i], upgradeHarvestersBeforeCraftingMore, maxLevelOfHarvesters)
         if (craftStrategy)
