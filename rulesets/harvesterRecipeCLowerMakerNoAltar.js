@@ -2,11 +2,6 @@ const currentRules = require('./current.js')
 
 const newRules = structuredClone(currentRules)
 
-// remove the altar level prerequisite
-for (let i in newRules.installations) {
-    newRules.installations[i].levelPrerequisite = undefined
-}
-
 newRules.installations.maker = { ...currentRules.installations.maker, 
     buildCosts: [
     { fud: 1250, fomo: 150, alpha: 250, kek: 63 }, // L1
@@ -81,4 +76,10 @@ newRules.installations.harvester_fud = { ...currentRules.installations.harvester
     buildTime: [0, 50688, 100042.1053, 152064, 207360, 253440, 302400, 349440, 405504],
     harvestRates: [0.1488095238, 0.3535829741, 0.8009525768, 1.341564821, 2.068413628, 3.522406684, 6.517480921, 11.90035437, 22.46526834]
     }
+
+// remove the altar level prerequisite
+for (let i in newRules.installations) {
+    newRules.installations[i].levelPrerequisite = undefined
+}    
+
 module.exports = newRules
