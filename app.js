@@ -19,11 +19,22 @@ const formatResult = (resultIn) => {
     const averageAltarLevel = resultIn.parcelTotals.averageLevels.altar
     const totalMakers = resultIn.parcelTotals.installationClasses.maker
     const averageMakerLevel = resultIn.parcelTotals.averageLevels.maker
+    const getLevelCountsOfInstallationType = (type) => { if (typeof resultIn.parcelTotals.installations[type] == 'undefined') return "0,0,0,0,0,0,0,0,0" ; return resultIn.parcelTotals.installations[type].join()  }
+    const fudHarvesterLevels = getLevelCountsOfInstallationType('harvester_fud')
+    const fomoHarvesterLevels = getLevelCountsOfInstallationType('harvester_fomo')
+    const alphaHarvesterLevels = getLevelCountsOfInstallationType('harvester_alpha')
+    const kekHarvesterLevels = getLevelCountsOfInstallationType('harvester_kek')
+    const fudReservoirLevels = getLevelCountsOfInstallationType('reservoir_fud')
+    const fomoReservoirLevels = getLevelCountsOfInstallationType('reservoir_fomo')
+    const alphaReservoirLevels = getLevelCountsOfInstallationType('reservoir_alpha')
+    const kekReservoirLevels = getLevelCountsOfInstallationType('reservoir_kek')
     const destroyValueFudTerms = getWalletValueInFudTerms({ tokens: resultIn.parcelTotals.destroyValue }, tokenSupply)
     const useCaseName = resultIn.useCaseName
     const resultOut = { blockTimeRounded, days, playerIndex, parcelIndex, playerTotalFudTerms,
         playerChangeFudTerms, parcelTotalFudTerms, parcelChangeFudTerms, totalHarvesters, averageHarvesterLevel,
-        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, useCaseName } //, ...structuredClone(resultIn) }
+        totalReservoirs, averageReservoirLevel, totalAltars, averageAltarLevel, totalMakers, averageMakerLevel, destroyValueFudTerms, useCaseName,
+        fudHarvesterLevels, fomoHarvesterLevels, alphaHarvesterLevels, kekHarvesterLevels,
+        fudReservoirLevels, fomoReservoirLevels, alphaReservoirLevels, kekReservoirLevels }
     
     return resultOut
 }
