@@ -14,7 +14,7 @@ newRules.installations.harvester_fud = { ...currentRules.installations.harvester
     { fud: 891.818558572599, fomo: 744.74672610624, alpha: 0, kek: 59.4545705715066 }, // L8
     { fud: 729.156420309669, fomo: 911.445525387087, alpha: 0, kek: 109.37346304645 }, // L9
     ],
-    buildTime: [0, 43200, 86400, 129600, 172800, 216000, 259200, 302400, 345600],
+    buildTime: [0, 86400, 172800, 259200, 345600, 432000, 518400, 604800, 691200],
     harvestRates: [4.166666667, 10.25390625, 18.26171875, 30.11067708, 49.64192708, 84.53776042, 150.1627604, 277.2460938, 527.2460938]
     }
     newRules.installations.harvester_fomo = { ...currentRules.installations.harvester_fomo, 
@@ -29,7 +29,7 @@ newRules.installations.harvester_fud = { ...currentRules.installations.harvester
     { fud: 657.129464211389, fomo: 985.694196317083, alpha: 0, kek: 65.7129464211389 }, // L8
     { fud: 402.954863855344, fomo: 1208.86459156603, alpha: 0, kek: 120.886459156603 }, // L9
     ],
-    buildTime: [0, 47808, 95494.73684, 145152, 196363.6364, 239040, 285120, 336000, 387072],
+    buildTime: [0, 95616, 190989.4737, 290304, 392727.2727, 478080, 570240, 672000, 774144],
     harvestRates: [2.083333333, 4.596578664, 8.329906798, 13.71377372, 22.40781431, 38.355095, 67.78180158, 125.4361677, 238.4069293]
     }
     newRules.installations.harvester_alpha = { ...currentRules.installations.harvester_alpha, 
@@ -44,7 +44,7 @@ newRules.installations.harvester_fud = { ...currentRules.installations.harvester
     { fud: 563.253826466905, fomo: 704.067283083631, alpha: 68.842134345955, kek: 56.3253826466905 }, // L8
     { fud: 690.77976660916, fomo: 863.47470826145, alpha: 86.347470826145, kek: 103.616964991374 }, // L9
     ],
-    buildTime: [0, 41472, 81852.63158, 124416, 169658.1818, 207360, 259200, 288960, 331776],
+    buildTime: [0, 82944, 163705.2632, 248832, 339316.3636, 414720, 518400, 577920, 663552],
     harvestRates: [1.488095238, 2.828663793, 4.805715461, 7.751263408, 13.09995298, 22.30857567, 39.10488553, 72.68865103, 138.459409]
     }
     newRules.installations.harvester_kek = { ...currentRules.installations.harvester_kek, 
@@ -59,7 +59,7 @@ newRules.installations.harvester_fud = { ...currentRules.installations.harvester
     { fud: 688.42134345955, fomo: 860.526679324437, alpha: 0, kek: 103.263201518932 }, // L8
     { fud: 422.143190705598, fomo: 1055.35797676399, alpha: 0, kek: 168.857276282239 }, // L9
     ],
-    buildTime: [0, 50688, 100042.1053, 152064, 207360, 253440, 302400, 349440, 405504],
+    buildTime: [0, 101376, 200084.2105, 304128, 414720, 506880, 604800, 698880, 811008],
     harvestRates: [0.2976190476, 0.7071659483, 1.601905154, 2.683129641, 4.136827257, 7.044813368, 13.03496184, 23.80070874, 44.93053668]
     }
 module.exports = newRules
