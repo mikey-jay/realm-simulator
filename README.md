@@ -5,17 +5,17 @@ This script simulates the harvesting mechanics of the [Aavegotchi](https://aaveg
 
 Each simulation contains a single set of harvesting mechanics rules. These include rules like build costs, limits on harvester count, crafting prerequisites, as well as limits on leveling up- like having to level up your altar or maker first.
 
-The simulation is played by "bots" that utilize a strategy that governs how they play. It is currently configured with two bots- the expandooor and the upgradooor, as described below.
+The simulation is played by "bots" that utilize a strategy that governs how they play. We primarily looked at four bot strategies as described below.
 
 Different simulation configurations (with different rulesets and bot assignments), are contained in the `/simulations` folder.
 
 ## Bots
 
 All bots play according to the following rules.
-- craft an altar, only upgrade the altar as needed to allow upgrading of other installations - bots do not spend more than 33% of the alchemica value in the parcel on an altar upgrade - this amounts to max level of 9 for partner, 8 for spacious, 6 for reasonable, and 4 for humble 
+- craft an altar, only upgrade the altar as needed to allow upgrading of other installations - bots do not spend more than 33% of the initial (round 1) alchemica value in the parcel on an altar upgrade - this amounts to max level of 9 for partner, 8 for spacious, 6 for reasonable, and 4 for humble 
 - craft a harvester - choose the most abundant alchemica token in the parcel (relative to the overall token supply)
 - craft and upgrade a single reservoir per alchemica type as needed to ensure a reservoir emptying frequency of 8 hours or less
-- craft and upgrade a maker as needed to allow upgrading of other installations - once a maker has been crafted, the bots' goal is to keep the maker one level ahead of their current simultaneous upgrades so that it never limits their progress. In order to ensure consistent results across different parcel sizes, bots stop upgrading their maker to ensure they spend no more than 50% of their parcel's alchemica supply on the maker. They could probably achieve a better result by keeping it a bit below that- but this number was picked because that is approximately the cost of a level 9 maker relative to a partner parcel's alchemica. The maximum levels are 9 for partner, 7 for spacious, 3 for reasonable, and 1 for humble.
+- craft and upgrade a maker as needed to allow upgrading of other installations - once a maker has been crafted, the bots' goal is to keep the maker one level ahead of their current simultaneous upgrades so that it never limits their progress. In order to ensure consistent results across different parcel sizes, bots stop upgrading their maker to ensure they spend no more than 50% of their parcel's initial (round 1) alchemica supply on the maker. They could probably achieve a better result by keeping it a bit below that- but this number was picked because that is approximately the cost of a level 9 maker relative to a partner parcel's alchemica. The maximum levels are 9 for partner, 7 for spacious, 3 for reasonable, and 1 for humble.
 - bots are considered to have a virtually unlimited bankroll (though it is possible to limit it in the simulation settings), and they reinvest every penny in their parcel
 - bots are given a single parcel to build on - this is currently a spacious parcel by default but this is configurable in the simulation - the parcel is assumed to get an average VRF roll for its alchemica supply, and does not have any boosts (both of these variables are configurable, however)
 - bots do not spend any GLTR to speed up installation crafting - since the value of GLTR vs alchemica is dynamic, its cost is not able to be assumed it a meaningful way in the simulation
@@ -44,6 +44,9 @@ This is a modified version of the harvester recipe which somewhat improves the R
 
 ### Recipe B
 This is a modified version of the harvester recipe which greatly improves the ROI of higher level harvesters and greatly diminishes the ROI of lower level harvesters compared to the original (current) ruleset.
+
+### Recipe C
+Similar to recipe B, but with lower overall costs and lower overall harvest rates (players generally need to build a higher quantity of harvesters in this scenario). In this recipe, the maker cost is also substantially reduced (by up to ~75%).
 
 ## Results
 Results are output to a timestamped .csv file in the `results` folder named similarly to the simulation script name that generated them. Charting and further aggregation and analysis of the data has been conducted and can be found in this [Google Drive folder](https://drive.google.com/drive/folders/1WB8L6aEPEdGnEgxcRUD3ysRwko2fjzMU).
