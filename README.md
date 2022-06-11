@@ -40,10 +40,10 @@ This bot is like the low levelooor, except they focus only on harvesting a singl
 Rulesets are contained in the `/rulesets` folder of the project. This is where game rules can be modified to examine their impact on the simulation output. The `current.js` ruleset file contains the rules as they currently exist as of bible chapter 4.
 
 ### Recipe A
-This is a modified version of the harvester recipe which somewhat improves the ROI of higher level harvesters and diminishes the ROI of lower level harvesters compared to the original (current) ruleset.
+This is a modified version of the harvester recipe which somewhat improves the ROI of higher level harvesters and diminishes the ROI of lower level harvesters compared to the original (current) ruleset. It maintains the current recipes' model of diminishing returns on harvester upgrade costs.
 
 ### Recipe B
-This is a modified version of the harvester recipe which greatly improves the ROI of higher level harvesters and greatly diminishes the ROI of lower level harvesters compared to the original (current) ruleset.
+This is a modified version of the harvester recipe which greatly improves the ROI of higher level harvesters and greatly diminishes the ROI of lower level harvesters compared to the original (current) ruleset. It uses an increasing returns approach to harvester upgrades.
 
 ### Recipe C
 Similar to recipe B, but with lower overall costs and lower overall harvest rates (players generally need to build a higher quantity of harvesters in this scenario). In this recipe, the maker cost is also substantially reduced (by up to ~75%).
